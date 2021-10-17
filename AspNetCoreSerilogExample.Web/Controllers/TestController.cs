@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using AspNetCoreMsLoggerExample.Web.Services.Validation;
+using AspNetCoreSerilogExample.Web.Services.Validation;
 
 namespace AspNetCoreSerilogExample.Web.Controllers
 {
@@ -22,12 +22,10 @@ namespace AspNetCoreSerilogExample.Web.Controllers
         }
 
         [HttpGet]
-        public void FlatLog(string input)
+        public string Submit(string input)
         {
             _logger.LogInformation($"Input text: {input}");
-            var test = _validateOrder.IsOrderValid("test");
-            _logger.LogInformation($"Validated order: {test}");
-
+            return _validateOrder.IsOrderValid("valid order").ToString();
         }
 
         [HttpGet]

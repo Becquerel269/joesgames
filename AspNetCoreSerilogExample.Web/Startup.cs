@@ -1,4 +1,4 @@
-﻿using AspNetCoreMsLoggerExample.Web.Services.Validation;
+﻿using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
