@@ -1,4 +1,5 @@
-using AspNetCoreMsLoggerExample.Web.Services.Validation;
+
+using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace JoesGamesTests

@@ -20,10 +20,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\AspNetCoreMsLoggerExample.Web\AspNetCoreMsLoggerExample.Web.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <!-- Make sure all of the necessary appsettings are included with the application. -->
     <Content Update="appsettings*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
