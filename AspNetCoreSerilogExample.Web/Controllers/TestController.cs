@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreSerilogExample.Web.Services.Validation;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using AspNetCoreSerilogExample.Web.Services.Validation;
 
 namespace AspNetCoreSerilogExample.Web.Controllers
 {

@@ -2,6 +2,6 @@
 {
     public interface IValidateOrder
     {
-       bool IsOrderValid(string order);
+        bool IsOrderValid(string order);
     }
 }

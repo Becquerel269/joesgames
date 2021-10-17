@@ -17,4 +17,8 @@
     <ProjectReference Include="..\AspNetCoreSerilogExample.Web\AspNetCoreSerilogExample.Web.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ProcessOrderTests\" />
+  </ItemGroup>
+
 </Project>

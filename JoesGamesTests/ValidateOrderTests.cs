@@ -1,4 +1,3 @@
-
 using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,7 +6,7 @@ namespace JoesGamesTests
     [TestClass]
     public class ValidateOrderTests
     {
-        ValidateOrder validateOrder;
+        private ValidateOrder validateOrder;
 
         [TestInitialize]
         public void TestInitialize()
@@ -20,7 +19,6 @@ namespace JoesGamesTests
         {
             // Arrange
             string validorder = "Valid order";
-            
 
             // Act
             bool result = validateOrder.IsOrderValid(validorder);
@@ -34,7 +32,6 @@ namespace JoesGamesTests
         {
             // Arrange
             string invalidorder = "invalid order";
-            
 
             // Act
             bool result = validateOrder.IsOrderValid(invalidorder);
@@ -46,7 +43,6 @@ namespace JoesGamesTests
         [TestMethod]
         public void IsOrderValidReturnsFalseWithNull()
         {
-           
             // Act
             bool result = validateOrder.IsOrderValid(null);
 

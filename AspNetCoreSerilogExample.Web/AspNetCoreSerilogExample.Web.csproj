@@ -30,9 +30,5 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Services\Validation\" />
-  </ItemGroup>
 
 </Project>
