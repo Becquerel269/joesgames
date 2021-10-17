@@ -1,4 +1,6 @@
-﻿using AspNetCoreSerilogExample.Web.Services.Validation;
+﻿using AspNetCoreSerilogExample.Web.DataLayer.Models;
+using AspNetCoreSerilogExample.Web.Services.Processing;
+using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,19 +15,20 @@ namespace AspNetCoreSerilogExample.Web.Controllers
     public class TestController : ControllerBase
     {
         private readonly ILogger<TestController> _logger;
-        private readonly IValidateOrder _validateOrder;
+        private readonly IProcessOrder _processOrder;
 
-        public TestController(ILogger<TestController> logger, IValidateOrder validateOrder)
+        public TestController(ILogger<TestController> logger, IProcessOrder validateOrder)
         {
             _logger = logger;
-            _validateOrder = validateOrder;
+            _processOrder = validateOrder;
         }
 
         [HttpGet]
         public string Submit(string input)
         {
             _logger.LogInformation($"Input text: {input}");
-            return _validateOrder.IsOrderValid("valid order").ToString();
+            Order order = new Order(Id: "id", Name: "name");
+            return _processOrder.ProcessOrder("valid order").ToString();
         }
 
         [HttpGet]

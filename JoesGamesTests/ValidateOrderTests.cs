@@ -1,3 +1,4 @@
+using AspNetCoreSerilogExample.Web.DataLayer.Models;
 using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,11 +8,13 @@ namespace JoesGamesTests
     public class ValidateOrderTests
     {
         private ValidateOrder validateOrder;
+        private Order order;
 
         [TestInitialize]
         public void TestInitialize()
         {
             validateOrder = new ValidateOrder();
+            order = new Order("id","name");
         }
 
         [TestMethod]
