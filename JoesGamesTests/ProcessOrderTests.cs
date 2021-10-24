@@ -1,4 +1,5 @@
-﻿using AspNetCoreSerilogExample.Web.Services.Processing;
+﻿using AspNetCoreSerilogExample.Web.Data.Models;
+using AspNetCoreSerilogExample.Web.Services.Processing;
 using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -14,12 +15,14 @@ namespace JoesGamesTests.ProcessOrderTests
     {
         private IProcessOrder processOrder;
         private IValidateOrder validateOrder;
+        private IOrderData orderData;
 
         [TestInitialize]
         public void TestInitialize()
         {
             validateOrder = new ValidateOrder();
-            processOrder = new ProcessOrder(validateOrder);
+            orderData = new OrderData();
+            processOrder = new ProcessOrder(validateOrder, orderData);
         }
 
         [TestMethod]

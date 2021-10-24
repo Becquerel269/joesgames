@@ -1,4 +1,5 @@
-﻿using AspNetCoreSerilogExample.Web.Services.Processing;
+﻿using AspNetCoreSerilogExample.Web.Data.Models;
+using AspNetCoreSerilogExample.Web.Services.Processing;
 using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +29,7 @@ namespace AspNetCoreSerilogExample.Web
             services.AddLogging();
             services.TryAdd(ServiceDescriptor.Singleton<IValidateOrder, ValidateOrder>());
             services.TryAdd(ServiceDescriptor.Singleton<IProcessOrder, ProcessOrder>());
+            services.TryAdd(ServiceDescriptor.Singleton<IOrderData, OrderData>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
