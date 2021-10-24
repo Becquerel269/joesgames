@@ -1,4 +1,5 @@
-﻿using AspNetCoreSerilogExample.Web.Data.Models;
+﻿using System;
+using AspNetCoreSerilogExample.Web.Data.Models;
 using AspNetCoreSerilogExample.Web.Services.Validation;
 
 namespace AspNetCoreSerilogExample.Web.Services.Processing
@@ -16,6 +17,10 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
 
         public IOrder GetOrder(string id)
         {
+            if (id == null)
+            {
+                throw new ArgumentNullException("id must not be null");
+            } 
             return _orderData.GetOrder(id);
         }
 

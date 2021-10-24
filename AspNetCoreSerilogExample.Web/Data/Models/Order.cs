@@ -5,6 +5,8 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class Order : IOrder
     {
+        
+
         [JsonPropertyName(name: "name")]
         public string Name { get; set; }
 
