@@ -1,4 +1,5 @@
 ﻿using AspNetCoreSerilogExample.Web.Data.Models;
+using AspNetCoreSerilogExample.Web.Services.Processing;
 using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,11 +16,13 @@ namespace AspNetCoreSerilogExample.Web.Controllers
     {
         private readonly ILogger<TestController> _logger;
         private readonly IValidateOrder _validateOrder;
+        private readonly IProcessOrder _processOrder;
 
-        public TestController(ILogger<TestController> logger, IValidateOrder validateOrder)
+        public TestController(ILogger<TestController> logger, IValidateOrder validateOrder, IProcessOrder processOrder)
         {
             _logger = logger;
             _validateOrder = validateOrder;
+            _processOrder = processOrder;
         }
 
         [HttpGet]
@@ -34,12 +37,11 @@ namespace AspNetCoreSerilogExample.Web.Controllers
         [Produces("application/json")]
         public Order Order(string id)
         {
-            string[] items = { "item1", "item2" };
-            Order order = new Order("fred", "fredid", items);
+            id = "someid";
             _logger.LogInformation(
                 "Input text: {Input}",
                 id);
-            return order;
+            return _processOrder.GetOrder(id);
         }
 
         [HttpGet]
