@@ -1,4 +1,5 @@
-﻿using AspNetCoreSerilogExample.Web.Services.Validation;
+﻿using AspNetCoreSerilogExample.Web.Data.Models;
+using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -28,12 +29,17 @@ namespace AspNetCoreSerilogExample.Web.Controllers
             return _validateOrder.IsOrderValid("valid order").ToString();
         }
 
+        //https://localhost:5001/api/test/order
         [HttpGet]
-        public void StructuredLog(string input)
+        [Produces("application/json")]
+        public Order Order(string id)
         {
+            string[] items = { "item1", "item2" };
+            Order order = new Order("fred", "fredid", items);
             _logger.LogInformation(
                 "Input text: {Input}",
-                input);
+                id);
+            return order;
         }
 
         [HttpGet]
