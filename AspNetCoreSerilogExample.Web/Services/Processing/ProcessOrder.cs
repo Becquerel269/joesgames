@@ -8,15 +8,13 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
         private readonly IValidateOrder _validateOrder;
         private readonly IOrderData _orderData;
 
-
-
         public ProcessOrder(IValidateOrder validateOrder, IOrderData orderData)
         {
             _validateOrder = validateOrder;
             _orderData = orderData;
         }
 
-        public Order GetOrder(string id)
+        public IOrder GetOrder(string id)
         {
             return _orderData.GetOrder(id);
         }

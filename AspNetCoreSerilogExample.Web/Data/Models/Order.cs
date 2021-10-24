@@ -1,17 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace AspNetCoreSerilogExample.Web.Data.Models
 {
-    public class Order
+    public class Order : IOrder
     {
+        [JsonPropertyName(name: "name")]
         public string Name { get; set; }
 
+        [JsonPropertyName(name: "id")]
         public string Id { get; set; }
 
+        [JsonPropertyName(name: "items")]
         public string[] Items { get; set; }
+
+        public Order()
+        {
+        }
 
         public Order(string name, string id, string[] items)
         {
@@ -23,8 +28,6 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             Name = name;
             Id = id;
             Items = items;
-
         }
-        
     }
 }

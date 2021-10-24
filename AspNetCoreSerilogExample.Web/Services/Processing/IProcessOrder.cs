@@ -6,6 +6,6 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
     {
         bool ProcessOrder(string order);
 
-        Order GetOrder(string id);
+        IOrder GetOrder(string id);
     }
 }

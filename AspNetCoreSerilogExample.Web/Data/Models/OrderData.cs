@@ -1,17 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class OrderData : IOrderData
     {
-        public Order GetOrder(string id)
+        private const string Filepath = "Data/Models/orders.json";
+
+        public IOrder GetOrder(string id)
         {
-            string[] items = { "item1", "item2" };
-            Order order = new Order("fred", "fredid", items);
-            return order;
+            var myJsonString = File.ReadAllText(Filepath);
+
+            Order[]? orders = JsonSerializer.Deserialize<Order[]>(myJsonString);
+
+            Console.Out.WriteLine(orders);
+            return orders?.FirstOrDefault(p => p.Id == id);
         }
     }
 }

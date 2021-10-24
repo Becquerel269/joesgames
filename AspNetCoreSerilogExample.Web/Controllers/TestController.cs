@@ -35,9 +35,9 @@ namespace AspNetCoreSerilogExample.Web.Controllers
         //https://localhost:5001/api/test/order
         [HttpGet]
         [Produces("application/json")]
-        public Order Order(string id)
+        public IOrder Order(string id)
         {
-            id = "someid";
+            id = "2";
             _logger.LogInformation(
                 "Input text: {Input}",
                 id);
