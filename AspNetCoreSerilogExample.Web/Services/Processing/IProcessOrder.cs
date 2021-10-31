@@ -4,7 +4,7 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
 {
     public interface IProcessOrder
     {
-        IOrder SubmitOrder(IOrder order);
+        IOrder SubmitOrder(Order order);
 
         IOrder GetOrder(string id);
     }

@@ -4,6 +4,6 @@
     {
         IOrder GetOrder(string id);
 
-        IOrder SubmitOrder(IOrder order);
+        IOrder SubmitOrder(Order order);
     }
 }

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace AspNetCoreSerilogExample.Web.Controllers
 {
@@ -26,21 +27,28 @@ namespace AspNetCoreSerilogExample.Web.Controllers
 
         [HttpPost]
         [Route("api/orders")]
-        public IOrder Add([FromBody]Order order)
+        public ActionResult<IOrder> Add([FromBody]Order order)
         {
             _logger.LogInformation($"Input text: {order.Name}");
-           
-            
-            return _processOrder.SubmitOrder(order);
-        }
 
+            var returnedOrder = _processOrder.SubmitOrder(order);
+            if (returnedOrder == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok(returnedOrder);
+        }
+        //do the same for the put as we have done for the post
+        //try move the logic from OrderData to ProcessOrder/fileprocessing
+        //then add unit tests including a new class for FileProcessingTests
+        //look at Get method make sure it is working
         [HttpPut]
         [Route("api/orders")]
         public IOrder Update(string input)
         {
             _logger.LogInformation($"Input text: {input}");
             string[] items = { "item1", "item2" };
-            IOrder dummyorder = new Order(
+            var dummyorder = new Order(
 
                 name: "order1",
                 id: "1",

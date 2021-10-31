@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -14,13 +15,13 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
         {
             var myJsonString = File.ReadAllText(Filepath);
 
-            Order[]? orders = JsonSerializer.Deserialize<Order[]>(myJsonString);
+            List<Order> orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
 
             Console.WriteLine(orders);
             return orders?.FirstOrDefault(p => p.Id == id);
         }
 
-        public IOrder SubmitOrder(IOrder order)
+        public IOrder SubmitOrder(Order order)
         {
             //update validateorder tests - needs dummy order
             //create & merge PR
@@ -32,22 +33,25 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             //replace the file with the updated array
 
             var myJsonString = File.ReadAllText(Filepath);
-
-            Order[]? orders = JsonSerializer.Deserialize<Order[]>(myJsonString);
-
-            Console.WriteLine(orders);
-
-            if (orders == null)
+            if (myJsonString == "")
             {
-                orders = (Order[])Array.Empty<IOrder>();
+                myJsonString = "[]";
             }
 
-            var currentMax = orders.Max(p => Int32.Parse(p.Id));
-            IOrder[] updated = null;
+            var orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
+
+
+            //if (orders == null)
+            //{
+            //    orders = (Order[])Array.Empty<IOrder>();
+            //}
+
+            
+            new List<IOrder>();
             IOrder matchingOrder = null;
             if (order.Id == null)
             {
-                order.Id = (currentMax + 1).ToString();
+                order.Id = GetNewId(order, orders);
             }
             else
             {
@@ -62,10 +66,10 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             }
             else 
             {
-                updated = orders.Append(order).ToArray();
+                orders.Add(order);
             }
 
-            string serializedOrders = JsonSerializer.Serialize(updated);
+            string serializedOrders = JsonSerializer.Serialize(orders);
             File.WriteAllText(Filepath, serializedOrders);
 
             //rename all service classes to have 'service' at the end
@@ -73,6 +77,21 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 
             return order;
 
+        }
+
+        private static string GetNewId(IOrder order, List<Order> orders)
+        {
+            if (orders.Count == 0)
+            {
+                order.Id = "1";
+            }
+            else
+            {
+                var currentMax = orders.Max(p => Int32.Parse(p.Id));
+                order.Id = (currentMax + 1).ToString();
+            }
+
+            return order.Id;
         }
     }
 }

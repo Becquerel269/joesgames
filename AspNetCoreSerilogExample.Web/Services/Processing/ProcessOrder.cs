@@ -8,11 +8,13 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
     {
         private readonly IValidateOrder _validateOrder;
         private readonly IOrderData _orderData;
+        private readonly IFileProcessService _fileProcessService;
 
-        public ProcessOrder(IValidateOrder validateOrder, IOrderData orderData)
+        public ProcessOrder(IValidateOrder validateOrder, IOrderData orderData, IFileProcessService fileProcessService)
         {
             _validateOrder = validateOrder;
             _orderData = orderData;
+            _fileProcessService = fileProcessService;
         }
 
         public IOrder GetOrder(string id)
@@ -24,10 +26,17 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
             return _orderData.GetOrder(id);
         }
 
-        public IOrder SubmitOrder(IOrder order)
+        public IOrder SubmitOrder(Order order)
         {
 
             if (_validateOrder.IsOrderValid(order) == false)
+            {
+                return null;
+            }
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            
+            var fileokay = _fileProcessService.EnsureFileExists($"{baseDirectory}/data/test.json");
+            if (!fileokay)
             {
                 return null;
             }

@@ -10,18 +10,19 @@ namespace JoesGamesTests.ProcessOrderTests
     [TestClass]
     public class ProcessOrderTests
     {
-        private IOrder validOrder;
-        private IOrder invalidOrder;
+        private Order validOrder;
+        private Order invalidOrder;
         private IProcessOrder processOrder;
         private IValidateOrder validateOrder;
         private IOrderData orderData;
+        private IFileProcessService fileProcessService;
 
         [TestInitialize]
         public void TestInitialize()
         {
             validateOrder = new ValidateOrder();
             orderData = new OrderData();
-            processOrder = new ProcessOrder(validateOrder, orderData);
+            processOrder = new ProcessOrder(validateOrder, orderData, fileProcessService);
             validOrder = new Order()
             {
                 Name = "validname",
