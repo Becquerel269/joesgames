@@ -43,7 +43,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             }
 
             var currentMax = orders.Max(p => Int32.Parse(p.Id));
-
+            IOrder[] updated = null;
             IOrder matchingOrder = null;
             if (order.Id == null)
             {
@@ -62,11 +62,11 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             }
             else 
             {
-                orders.Append(order);
+                updated = orders.Append(order).ToArray();
             }
 
-            
-            File.WriteAllText(Filepath, myJsonString);
+            string serializedOrders = JsonSerializer.Serialize(updated);
+            File.WriteAllText(Filepath, serializedOrders);
 
             //rename all service classes to have 'service' at the end
 

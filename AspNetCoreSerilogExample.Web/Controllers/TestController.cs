@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreSerilogExample.Web.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    //[Route("api/[controller]/[action]")]
     [ApiController]
     public class TestController : ControllerBase
     {
@@ -25,8 +25,19 @@ namespace AspNetCoreSerilogExample.Web.Controllers
             _processOrder = processOrder;
         }
 
-        [HttpGet]
-        public IOrder Submit(string input)
+        [HttpPost]
+        [Route("api/orders")]
+        public IOrder Add([FromBody]Order order)
+        {
+            _logger.LogInformation($"Input text: {order.Name}");
+           
+            
+            return _processOrder.SubmitOrder(order);
+        }
+
+        [HttpPut]
+        [Route("api/orders")]
+        public IOrder Update(string input)
         {
             _logger.LogInformation($"Input text: {input}");
             string[] items = { "item1", "item2" };
@@ -41,6 +52,7 @@ namespace AspNetCoreSerilogExample.Web.Controllers
 
         //https://localhost:5001/api/test/order
         [HttpGet]
+        [Route("api/orders")]
         [Produces("application/json")]
         public IOrder Order(string id)
         {
@@ -49,32 +61,6 @@ namespace AspNetCoreSerilogExample.Web.Controllers
                 "Input text: {Input}",
                 id);
             return _processOrder.GetOrder(id);
-        }
-
-        [HttpGet]
-        public void EnrichLog(string input, string inputType)
-        {
-            _logger.LogInformation("Input text: {Input} with {InputType}", input, inputType);
-        }
-
-        [HttpGet]
-        public void ScopeLog(string input, string additionalContext)
-        {
-            using (_logger.BeginScope(new Dictionary<string, object> { { "AdditionalContext", additionalContext } }))
-            {
-                _logger.LogInformation("Input text with scope: {Input}", input);
-
-                MoreWork();
-            }
-        }
-
-        [HttpGet]
-        public async Task TimeLog()
-        {
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            await Task.Delay(new Random().Next(2000));
-            stopwatch.Stop();
-            _logger.LogInformation("Long task: {LongTimeElapsedMs}ms", stopwatch.ElapsedMilliseconds);
         }
 
         private void MoreWork()
