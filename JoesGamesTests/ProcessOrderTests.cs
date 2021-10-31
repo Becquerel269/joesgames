@@ -10,6 +10,8 @@ namespace JoesGamesTests.ProcessOrderTests
     [TestClass]
     public class ProcessOrderTests
     {
+        private IOrder validOrder;
+        private IOrder invalidOrder;
         private IProcessOrder processOrder;
         private IValidateOrder validateOrder;
         private IOrderData orderData;
@@ -20,42 +22,57 @@ namespace JoesGamesTests.ProcessOrderTests
             validateOrder = new ValidateOrder();
             orderData = new OrderData();
             processOrder = new ProcessOrder(validateOrder, orderData);
+            validOrder = new Order()
+            {
+                Name = "validname",
+                Id = "1",
+                Items = Array.Empty<string>()
+            };
+            invalidOrder = new Order
+            {
+                Name = null,
+                Id = null,
+                Items = new string[]
+                {
+                }
+            };
         }
 
         [TestMethod]
         public void ProcessOrder_ReturnsTrue_WithValidOrder()
         {
             // Arrange
-            string validorder = "Valid order";
+            
 
             // Act
-            bool result = processOrder.ProcessOrder(validorder);
+            var result = processOrder.SubmitOrder(validOrder);
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.AreEqual(JsonSerializer.Serialize(validOrder), JsonSerializer.Serialize(result));
         }
 
         [TestMethod]
-        public void ProcessOrder_ReturnsFalse_WithNotValidOrder()
+        
+        public void ProcessOrder_ReturnsFalse_WhenOrderNameNotSupplied()
         {
             // Arrange
-            string invalidorder = "invalid order";
+           
 
             // Act
-            bool result = processOrder.ProcessOrder(invalidorder);
+            var result = processOrder.SubmitOrder(invalidOrder);
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void ProcessOrder_ReturnsFalse_WithNull()
+        public void ProcessOrder_ReturnsNull_WithNull()
         {
             // Act
-            bool result = processOrder.ProcessOrder(null);
+            var result = processOrder.SubmitOrder(null);
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -100,5 +117,6 @@ namespace JoesGamesTests.ProcessOrderTests
 
            
         }
+
     }
 }

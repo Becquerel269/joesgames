@@ -24,9 +24,14 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
             return _orderData.GetOrder(id);
         }
 
-        bool IProcessOrder.ProcessOrder(string order)
+        public IOrder SubmitOrder(IOrder order)
         {
-            return _validateOrder.IsOrderValid(order);
+            if (_validateOrder.IsOrderValid(order) == false)
+            {
+                return null;
+            }
+
+            return _orderData.SubmitOrder(order);
         }
     }
 }

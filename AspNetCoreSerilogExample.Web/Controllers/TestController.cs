@@ -15,21 +15,28 @@ namespace AspNetCoreSerilogExample.Web.Controllers
     public class TestController : ControllerBase
     {
         private readonly ILogger<TestController> _logger;
-        private readonly IValidateOrder _validateOrder;
+        
         private readonly IProcessOrder _processOrder;
 
         public TestController(ILogger<TestController> logger, IValidateOrder validateOrder, IProcessOrder processOrder)
         {
             _logger = logger;
-            _validateOrder = validateOrder;
+            
             _processOrder = processOrder;
         }
 
         [HttpGet]
-        public string Submit(string input)
+        public IOrder Submit(string input)
         {
             _logger.LogInformation($"Input text: {input}");
-            return _validateOrder.IsOrderValid("valid order").ToString();
+            string[] items = { "item1", "item2" };
+            IOrder dummyorder = new Order(
+
+                name: "order1",
+                id: "1",
+                items: items
+            );
+            return _processOrder.SubmitOrder(dummyorder);
         }
 
         //https://localhost:5001/api/test/order

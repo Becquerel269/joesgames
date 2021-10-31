@@ -1,18 +1,21 @@
-﻿namespace AspNetCoreSerilogExample.Web.Services.Validation
+﻿using AspNetCoreSerilogExample.Web.Data.Models;
+using static System.String;
+
+namespace AspNetCoreSerilogExample.Web.Services.Validation
 {
     public class ValidateOrder : IValidateOrder
     {
-        public bool IsOrderValid(string order)
+        public bool IsOrderValid(IOrder order)
         {
             if (order == null)
             {
                 return false;
             }
-            if (order.ToLower() == "valid order")
+            if (IsNullOrWhiteSpace(order.Name))
             {
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
     }
 }

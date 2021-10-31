@@ -3,5 +3,7 @@
     public interface IOrderData
     {
         IOrder GetOrder(string id);
+
+        IOrder SubmitOrder(IOrder order);
     }
 }
