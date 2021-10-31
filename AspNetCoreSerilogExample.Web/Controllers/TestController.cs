@@ -16,13 +16,13 @@ namespace AspNetCoreSerilogExample.Web.Controllers
     {
         private readonly ILogger<TestController> _logger;
         
-        private readonly IProcessOrder _processOrder;
+        private readonly IProcessOrderService _processOrderService;
 
-        public TestController(ILogger<TestController> logger, IValidateOrder validateOrder, IProcessOrder processOrder)
+        public TestController(ILogger<TestController> logger, IValidateOrderService validateOrderService, IProcessOrderService processOrderService)
         {
             _logger = logger;
             
-            _processOrder = processOrder;
+            _processOrderService = processOrderService;
         }
 
         [HttpPost]
@@ -31,7 +31,7 @@ namespace AspNetCoreSerilogExample.Web.Controllers
         {
             _logger.LogInformation($"Input text: {order.Name}");
 
-            var returnedOrder = _processOrder.SubmitOrder(order);
+            var returnedOrder = _processOrderService.SubmitOrder(order);
             if (returnedOrder == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -54,7 +54,7 @@ namespace AspNetCoreSerilogExample.Web.Controllers
                 id: "1",
                 items: items
             );
-            return _processOrder.SubmitOrder(dummyorder);
+            return _processOrderService.SubmitOrder(dummyorder);
         }
 
         //https://localhost:5001/api/test/order
@@ -67,7 +67,7 @@ namespace AspNetCoreSerilogExample.Web.Controllers
             _logger.LogInformation(
                 "Input text: {Input}",
                 id);
-            return _processOrder.GetOrder(id);
+            return _processOrderService.GetOrder(id);
         }
 
         private void MoreWork()

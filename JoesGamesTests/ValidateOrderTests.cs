@@ -8,14 +8,14 @@ namespace JoesGamesTests
     [TestClass]
     public class ValidateOrderTests
     {
-        private ValidateOrder validateOrder;
+        private ValidateOrderService _validateOrderService;
         private IOrder validOrder;
         private IOrder invalidOrder;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            validateOrder = new ValidateOrder();
+            _validateOrderService = new ValidateOrderService();
             validOrder = new Order()
             {
                 Name = "validname",
@@ -39,7 +39,7 @@ namespace JoesGamesTests
             
 
             // Act
-            var result = validateOrder.IsOrderValid(validOrder);
+            var result = _validateOrderService.IsOrderValid(validOrder);
 
             // Assert
             Assert.IsTrue(result);
@@ -52,7 +52,7 @@ namespace JoesGamesTests
             
 
             // Act
-            var result = validateOrder.IsOrderValid(invalidOrder);
+            var result = _validateOrderService.IsOrderValid(invalidOrder);
 
             // Assert
             Assert.IsFalse(result);
@@ -62,7 +62,7 @@ namespace JoesGamesTests
         public void IsOrderValid_ReturnsNull_WithNull()
         {
             // Act
-            bool result = validateOrder.IsOrderValid(null);
+            bool result = _validateOrderService.IsOrderValid(null);
 
             // Assert
             Assert.IsFalse(result);

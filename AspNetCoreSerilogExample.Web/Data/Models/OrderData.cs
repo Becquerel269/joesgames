@@ -23,14 +23,10 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 
         public IOrder SubmitOrder(Order order)
         {
-            //update validateorder tests - needs dummy order
-            //create & merge PR
+           
 
             
-            //get existing orders from file
-            //is this order in the file, if so replace
-            //if not append to the array
-            //replace the file with the updated array
+            
 
             var myJsonString = File.ReadAllText(Filepath);
             if (myJsonString == "")

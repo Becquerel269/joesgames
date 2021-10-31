@@ -27,8 +27,8 @@ namespace AspNetCoreSerilogExample.Web
         {
             services.AddControllers();
             services.AddLogging();
-            services.TryAdd(ServiceDescriptor.Singleton<IValidateOrder, ValidateOrder>());
-            services.TryAdd(ServiceDescriptor.Singleton<IProcessOrder, ProcessOrder>());
+            services.TryAdd(ServiceDescriptor.Singleton<IValidateOrderService, ValidateOrderService>());
+            services.TryAdd(ServiceDescriptor.Singleton<IProcessOrderService, ProcessOrderService>());
             services.TryAdd(ServiceDescriptor.Singleton<IOrderData, OrderData>());
             services.TryAdd(ServiceDescriptor.Singleton<IFileProcessService, FileProcessService>());
         }

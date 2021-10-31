@@ -4,15 +4,15 @@ using AspNetCoreSerilogExample.Web.Services.Validation;
 
 namespace AspNetCoreSerilogExample.Web.Services.Processing
 {
-    public class ProcessOrder : IProcessOrder
+    public class ProcessOrderService : IProcessOrderService
     {
-        private readonly IValidateOrder _validateOrder;
+        private readonly IValidateOrderService _validateOrderService;
         private readonly IOrderData _orderData;
         private readonly IFileProcessService _fileProcessService;
 
-        public ProcessOrder(IValidateOrder validateOrder, IOrderData orderData, IFileProcessService fileProcessService)
+        public ProcessOrderService(IValidateOrderService validateOrderService, IOrderData orderData, IFileProcessService fileProcessService)
         {
-            _validateOrder = validateOrder;
+            _validateOrderService = validateOrderService;
             _orderData = orderData;
             _fileProcessService = fileProcessService;
         }
@@ -29,7 +29,7 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
         public IOrder SubmitOrder(Order order)
         {
 
-            if (_validateOrder.IsOrderValid(order) == false)
+            if (_validateOrderService.IsOrderValid(order) == false)
             {
                 return null;
             }
