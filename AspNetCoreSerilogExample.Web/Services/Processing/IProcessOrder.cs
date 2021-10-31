@@ -1,7 +1,11 @@
-﻿namespace AspNetCoreSerilogExample.Web.Services.Processing
+﻿using AspNetCoreSerilogExample.Web.Data.Models;
+
+namespace AspNetCoreSerilogExample.Web.Services.Processing
 {
     public interface IProcessOrder
     {
-        bool ProcessOrder(string order);
+        IOrder SubmitOrder(IOrder order);
+
+        IOrder GetOrder(string id);
     }
 }

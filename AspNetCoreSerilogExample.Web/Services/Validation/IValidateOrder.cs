@@ -1,7 +1,9 @@
-﻿namespace AspNetCoreSerilogExample.Web.Services.Validation
+﻿using AspNetCoreSerilogExample.Web.Data.Models;
+
+namespace AspNetCoreSerilogExample.Web.Services.Validation
 {
     public interface IValidateOrder
     {
-        bool IsOrderValid(string order);
+        bool IsOrderValid(IOrder order);
     }
 }
