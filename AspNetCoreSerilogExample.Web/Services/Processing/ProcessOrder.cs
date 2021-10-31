@@ -26,6 +26,7 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
 
         public IOrder SubmitOrder(IOrder order)
         {
+
             if (_validateOrder.IsOrderValid(order) == false)
             {
                 return null;
