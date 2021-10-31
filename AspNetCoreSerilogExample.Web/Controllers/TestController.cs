@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreSerilogExample.Web.Controllers
 {
-    //[Route("api/[controller]/[action]")]
     [ApiController]
     public class TestController : ControllerBase
     {
