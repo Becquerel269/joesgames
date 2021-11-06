@@ -23,10 +23,6 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 
         public IOrder SubmitOrder(Order order)
         {
-           
-
-            
-            
 
             var myJsonString = File.ReadAllText(Filepath);
             if (myJsonString == "")
@@ -36,14 +32,6 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 
             var orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
 
-
-            //if (orders == null)
-            //{
-            //    orders = (Order[])Array.Empty<IOrder>();
-            //}
-
-            
-            new List<IOrder>();
             IOrder matchingOrder = null;
             if (order.Id == null)
             {
@@ -62,14 +50,11 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             }
             else 
             {
-                orders.Add(order);
+                orders?.Add(order);
             }
 
             string serializedOrders = JsonSerializer.Serialize(orders);
             File.WriteAllText(Filepath, serializedOrders);
-
-            //rename all service classes to have 'service' at the end
-
 
             return order;
 
@@ -83,7 +68,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             }
             else
             {
-                var currentMax = orders.Max(p => Int32.Parse(p.Id));
+                var currentMax = orders.Max(p => int.Parse(p.Id));
                 order.Id = (currentMax + 1).ToString();
             }
 

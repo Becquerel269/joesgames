@@ -38,23 +38,22 @@ namespace AspNetCoreSerilogExample.Web.Controllers
             }
             return Ok(returnedOrder);
         }
-        //do the same for the put as we have done for the post
+        //do the same for the put as we have done for the post ***
         //try move the logic from OrderData to ProcessOrder/fileprocessing
         //then add unit tests including a new class for FileProcessingTests
         //look at Get method make sure it is working
         [HttpPut]
         [Route("api/orders")]
-        public IOrder Update(string input)
+        public ActionResult<IOrder> Update([FromBody]Order order)
         {
-            _logger.LogInformation($"Input text: {input}");
-            string[] items = { "item1", "item2" };
-            var dummyorder = new Order(
+            _logger.LogInformation($"Input text: {order.Name}");
 
-                name: "order1",
-                id: "1",
-                items: items
-            );
-            return _processOrderService.SubmitOrder(dummyorder);
+            var updatedOrder = _processOrderService.SubmitOrder(order);
+            if (updatedOrder == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            return Ok(updatedOrder);
         }
 
         //https://localhost:5001/api/test/order
