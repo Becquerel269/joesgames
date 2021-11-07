@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AspNetCoreSerilogExample.Web.Services.Processing;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,11 +9,17 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class OrderData : IOrderData
     {
-        
-        
+        private readonly IFileProcessService _fileProcessService;
 
-        public IOrder GetOrder(string id, string filepath)
+        public OrderData(IFileProcessService fileProcessService)
         {
+            _fileProcessService = fileProcessService;
+        }
+
+
+        public IOrder GetOrder(string id)
+        {
+            if (GetFilepath(out var filepath)) return null;
             var myJsonString = File.ReadAllText(filepath);
 
             List<Order> orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
@@ -20,9 +27,9 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             return orders?.FirstOrDefault(p => p.Id == id);
         }
 
-        public IOrder SubmitOrder(Order order, string filepath)
+        public IOrder SubmitOrder(Order order)
         {
-
+            if (GetFilepath(out var filepath)) return null;
             var myJsonString = File.ReadAllText(filepath);
             if (myJsonString == "")
             {
@@ -59,8 +66,9 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 
         }
 
-        public List<Order> GetOrders(string filepath)
+        public List<Order> GetOrders()
         {
+            if (GetFilepath(out var filepath)) return null;
             var myJsonString = File.ReadAllText(filepath);
 
             var orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
@@ -80,6 +88,20 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             }
 
             return order.Id;
+        }
+
+        private bool GetFilepath(out string filepath)
+        {
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            filepath = $"{baseDirectory}/data/test.json";
+
+            var fileokay = _fileProcessService.EnsureFileExists(filepath);
+            if (!fileokay)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
