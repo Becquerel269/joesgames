@@ -45,7 +45,6 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
 
         public List<Order> GetOrders()
         {
-            
             return _orderData.GetOrders();
         }
     }
