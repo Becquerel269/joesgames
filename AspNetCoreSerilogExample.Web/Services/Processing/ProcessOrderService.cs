@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AspNetCoreSerilogExample.Web.Data.Models;
 using AspNetCoreSerilogExample.Web.Services.Validation;
 
@@ -19,29 +20,45 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
 
         public IOrder GetOrder(string id)
         {
+
             if (id == null)
             {
                 throw new ArgumentNullException("id must not be null");
-            } 
-            return _orderData.GetOrder(id);
+            }
+            if (GetFilepath(out var filepath)) return null;
+            return _orderData.GetOrder(id, filepath);
+        }
+
+        private bool GetFilepath(out string filepath)
+        {
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            filepath = $"{baseDirectory}/data/test.json";
+
+            var fileokay = _fileProcessService.EnsureFileExists(filepath);
+            if (!fileokay)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public IOrder SubmitOrder(Order order)
         {
-
+           
             if (_validateOrderService.IsOrderValid(order) == false)
             {
                 return null;
             }
-            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            
-            var fileokay = _fileProcessService.EnsureFileExists($"{baseDirectory}/data/test.json");
-            if (!fileokay)
-            {
-                return null;
-            }
+            if (GetFilepath(out var filepath)) return null;
 
-            return _orderData.SubmitOrder(order);
+            return _orderData.SubmitOrder(order, filepath);
+        }
+
+        public List<Order> GetOrders()
+        {
+            if (GetFilepath(out var filepath)) return null;
+            return _orderData.GetOrders(filepath);
         }
     }
 }

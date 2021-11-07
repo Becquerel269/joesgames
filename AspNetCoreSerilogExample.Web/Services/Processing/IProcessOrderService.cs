@@ -1,4 +1,5 @@
-﻿using AspNetCoreSerilogExample.Web.Data.Models;
+﻿using System.Collections.Generic;
+using AspNetCoreSerilogExample.Web.Data.Models;
 
 namespace AspNetCoreSerilogExample.Web.Services.Processing
 {
@@ -7,5 +8,7 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
         IOrder SubmitOrder(Order order);
 
         IOrder GetOrder(string id);
+
+        List<Order> GetOrders();
     }
 }

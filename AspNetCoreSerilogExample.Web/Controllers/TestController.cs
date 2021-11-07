@@ -58,20 +58,24 @@ namespace AspNetCoreSerilogExample.Web.Controllers
 
         //https://localhost:5001/api/test/order
         [HttpGet]
-        [Route("api/orders")]
+        [Route("api/orders/{id}")]
         [Produces("application/json")]
-        public IOrder Order(string id)
+        public ActionResult<IOrder> GetById(string id)
         {
-            id = "2";
+            
             _logger.LogInformation(
                 "Input text: {Input}",
                 id);
-            return _processOrderService.GetOrder(id);
+            return Ok(_processOrderService.GetOrder(id));
         }
-
-        private void MoreWork()
+        [HttpGet]
+        [Route("api/orders")]
+        [Produces("application/json")]
+        public ActionResult<List<Order>> GetOrders()
         {
-            _logger.LogInformation("More log context");
+
+            
+            return Ok(_processOrderService.GetOrders());
         }
     }
 }

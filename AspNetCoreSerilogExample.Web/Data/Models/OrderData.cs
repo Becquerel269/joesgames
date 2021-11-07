@@ -8,23 +8,22 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class OrderData : IOrderData
     {
-        private const string Filepath = "Data/Models/orders.json";
+        
         
 
-        public IOrder GetOrder(string id)
+        public IOrder GetOrder(string id, string filepath)
         {
-            var myJsonString = File.ReadAllText(Filepath);
+            var myJsonString = File.ReadAllText(filepath);
 
             List<Order> orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
 
-            Console.WriteLine(orders);
             return orders?.FirstOrDefault(p => p.Id == id);
         }
 
-        public IOrder SubmitOrder(Order order)
+        public IOrder SubmitOrder(Order order, string filepath)
         {
 
-            var myJsonString = File.ReadAllText(Filepath);
+            var myJsonString = File.ReadAllText(filepath);
             if (myJsonString == "")
             {
                 myJsonString = "[]";
@@ -54,10 +53,18 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             }
 
             string serializedOrders = JsonSerializer.Serialize(orders);
-            File.WriteAllText(Filepath, serializedOrders);
+            File.WriteAllText(filepath, serializedOrders);
 
             return order;
 
+        }
+
+        public List<Order> GetOrders(string filepath)
+        {
+            var myJsonString = File.ReadAllText(filepath);
+
+            var orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
+            return orders;
         }
 
         private static string GetNewId(IOrder order, List<Order> orders)
