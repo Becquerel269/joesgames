@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -7,47 +8,33 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class OrderData : IOrderData
     {
-        private const string Filepath = "Data/Models/orders.json";
+        
         
 
-        public IOrder GetOrder(string id)
+        public IOrder GetOrder(string id, string filepath)
         {
-            var myJsonString = File.ReadAllText(Filepath);
+            var myJsonString = File.ReadAllText(filepath);
 
-            Order[]? orders = JsonSerializer.Deserialize<Order[]>(myJsonString);
+            List<Order> orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
 
-            Console.WriteLine(orders);
             return orders?.FirstOrDefault(p => p.Id == id);
         }
 
-        public IOrder SubmitOrder(IOrder order)
+        public IOrder SubmitOrder(Order order, string filepath)
         {
-            //update validateorder tests - needs dummy order
-            //create & merge PR
 
-            
-            //get existing orders from file
-            //is this order in the file, if so replace
-            //if not append to the array
-            //replace the file with the updated array
-
-            var myJsonString = File.ReadAllText(Filepath);
-
-            Order[]? orders = JsonSerializer.Deserialize<Order[]>(myJsonString);
-
-            Console.WriteLine(orders);
-
-            if (orders == null)
+            var myJsonString = File.ReadAllText(filepath);
+            if (myJsonString == "")
             {
-                orders = (Order[])Array.Empty<IOrder>();
+                myJsonString = "[]";
             }
 
-            var currentMax = orders.Max(p => Int32.Parse(p.Id));
-            IOrder[] updated = null;
+            var orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
+
             IOrder matchingOrder = null;
             if (order.Id == null)
             {
-                order.Id = (currentMax + 1).ToString();
+                order.Id = GetNewId(order, orders);
             }
             else
             {
@@ -62,17 +49,37 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             }
             else 
             {
-                updated = orders.Append(order).ToArray();
+                orders?.Add(order);
             }
 
-            string serializedOrders = JsonSerializer.Serialize(updated);
-            File.WriteAllText(Filepath, serializedOrders);
-
-            //rename all service classes to have 'service' at the end
-
+            string serializedOrders = JsonSerializer.Serialize(orders);
+            File.WriteAllText(filepath, serializedOrders);
 
             return order;
 
+        }
+
+        public List<Order> GetOrders(string filepath)
+        {
+            var myJsonString = File.ReadAllText(filepath);
+
+            var orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
+            return orders;
+        }
+
+        private static string GetNewId(IOrder order, List<Order> orders)
+        {
+            if (orders.Count == 0)
+            {
+                order.Id = "1";
+            }
+            else
+            {
+                var currentMax = orders.Max(p => int.Parse(p.Id));
+                order.Id = (currentMax + 1).ToString();
+            }
+
+            return order.Id;
         }
     }
 }

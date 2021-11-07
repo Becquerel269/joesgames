@@ -2,7 +2,7 @@
 
 namespace AspNetCoreSerilogExample.Web.Services.Validation
 {
-    public interface IValidateOrder
+    public interface IValidateOrderService
     {
         bool IsOrderValid(IOrder order);
     }

@@ -10,18 +10,19 @@ namespace JoesGamesTests.ProcessOrderTests
     [TestClass]
     public class ProcessOrderTests
     {
-        private IOrder validOrder;
-        private IOrder invalidOrder;
-        private IProcessOrder processOrder;
-        private IValidateOrder validateOrder;
+        private Order validOrder;
+        private Order invalidOrder;
+        private IProcessOrderService _processOrderService;
+        private IValidateOrderService _validateOrderService;
         private IOrderData orderData;
+        private IFileProcessService fileProcessService;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            validateOrder = new ValidateOrder();
+            _validateOrderService = new ValidateOrderService();
             orderData = new OrderData();
-            processOrder = new ProcessOrder(validateOrder, orderData);
+            _processOrderService = new ProcessOrderService(_validateOrderService, orderData, fileProcessService);
             validOrder = new Order()
             {
                 Name = "validname",
@@ -45,7 +46,7 @@ namespace JoesGamesTests.ProcessOrderTests
             
 
             // Act
-            var result = processOrder.SubmitOrder(validOrder);
+            var result = _processOrderService.SubmitOrder(validOrder);
 
             // Assert
             Assert.AreEqual(JsonSerializer.Serialize(validOrder), JsonSerializer.Serialize(result));
@@ -59,7 +60,7 @@ namespace JoesGamesTests.ProcessOrderTests
            
 
             // Act
-            var result = processOrder.SubmitOrder(invalidOrder);
+            var result = _processOrderService.SubmitOrder(invalidOrder);
 
             // Assert
             Assert.IsNull(result);
@@ -69,7 +70,7 @@ namespace JoesGamesTests.ProcessOrderTests
         public void ProcessOrder_ReturnsNull_WithNull()
         {
             // Act
-            var result = processOrder.SubmitOrder(null);
+            var result = _processOrderService.SubmitOrder(null);
 
             // Assert
             Assert.IsNull(result);
@@ -88,7 +89,7 @@ namespace JoesGamesTests.ProcessOrderTests
                 items: items
             );
             // Act
-            var result = processOrder.GetOrder(id);
+            var result = _processOrderService.GetOrder(id);
 
             // Assert
             //This Assert is ok because all properties are serialized
@@ -101,7 +102,7 @@ namespace JoesGamesTests.ProcessOrderTests
             string id = "unknown id";
 
             // Act
-            var result = processOrder.GetOrder(id);
+            var result = _processOrderService.GetOrder(id);
 
             // Assert
             Assert.IsNull(result);
@@ -113,7 +114,7 @@ namespace JoesGamesTests.ProcessOrderTests
         {
             
             // Act
-            var result = processOrder.GetOrder(null);
+            var result = _processOrderService.GetOrder(null);
 
            
         }

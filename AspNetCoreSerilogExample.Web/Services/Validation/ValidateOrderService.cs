@@ -3,7 +3,7 @@ using static System.String;
 
 namespace AspNetCoreSerilogExample.Web.Services.Validation
 {
-    public class ValidateOrder : IValidateOrder
+    public class ValidateOrderService : IValidateOrderService
     {
         public bool IsOrderValid(IOrder order)
         {
