@@ -9,13 +9,26 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class OrderData : IOrderData
     {
-        private readonly IFileProcessService _fileProcessService;
+        
 
-        public OrderData(IFileProcessService fileProcessService)
+        public bool EnsureFileExists(string filepath)
         {
-            _fileProcessService = fileProcessService;
-        }
+            if (File.Exists(filepath))
+            {
+                return true;
+            }
+            try
+            {
+                File.Create(filepath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"unable to create file with filepath {filepath}");
 
+            }
+
+            return false;
+        }
 
         public IOrder GetOrder(string id)
         {
@@ -95,7 +108,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             filepath = $"{baseDirectory}/data/test.json";
 
-            var fileokay = _fileProcessService.EnsureFileExists(filepath);
+            var fileokay = EnsureFileExists(filepath);
             if (!fileokay)
             {
                 return true;
