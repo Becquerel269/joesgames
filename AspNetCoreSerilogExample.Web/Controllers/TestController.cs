@@ -38,10 +38,7 @@ namespace AspNetCoreSerilogExample.Web.Controllers
             }
             return Ok(returnedOrder);
         }
-        //do the same for the put as we have done for the post ***
-        //try move the logic from OrderData to ProcessOrder/fileprocessing
-        //then add unit tests including a new class for FileProcessingTests
-        //look at Get method make sure it is working
+        
         [HttpPut]
         [Route("api/orders")]
         public ActionResult<IOrder> Update([FromBody]Order order)

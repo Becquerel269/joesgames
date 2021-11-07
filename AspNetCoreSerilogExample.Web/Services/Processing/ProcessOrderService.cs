@@ -9,13 +9,13 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
     {
         private readonly IValidateOrderService _validateOrderService;
         private readonly IOrderData _orderData;
-        private readonly IFileProcessService _fileProcessService;
+        
 
-        public ProcessOrderService(IValidateOrderService validateOrderService, IOrderData orderData, IFileProcessService fileProcessService)
+        public ProcessOrderService(IValidateOrderService validateOrderService, IOrderData orderData)
         {
             _validateOrderService = validateOrderService;
             _orderData = orderData;
-            _fileProcessService = fileProcessService;
+            
         }
 
         public IOrder GetOrder(string id)
@@ -25,23 +25,11 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
             {
                 throw new ArgumentNullException("id must not be null");
             }
-            if (GetFilepath(out var filepath)) return null;
-            return _orderData.GetOrder(id, filepath);
+            
+            return _orderData.GetOrder(id);
         }
 
-        private bool GetFilepath(out string filepath)
-        {
-            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            filepath = $"{baseDirectory}/data/test.json";
-
-            var fileokay = _fileProcessService.EnsureFileExists(filepath);
-            if (!fileokay)
-            {
-                return true;
-            }
-
-            return false;
-        }
+        
 
         public IOrder SubmitOrder(Order order)
         {
@@ -50,15 +38,15 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
             {
                 return null;
             }
-            if (GetFilepath(out var filepath)) return null;
+            
 
-            return _orderData.SubmitOrder(order, filepath);
+            return _orderData.SubmitOrder(order);
         }
 
         public List<Order> GetOrders()
         {
-            if (GetFilepath(out var filepath)) return null;
-            return _orderData.GetOrders(filepath);
+            
+            return _orderData.GetOrders();
         }
     }
 }
