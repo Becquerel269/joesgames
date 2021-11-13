@@ -29,7 +29,7 @@ namespace AspNetCoreSerilogExample.Web
             services.AddLogging();
             services.TryAdd(ServiceDescriptor.Singleton<IValidateOrderService, ValidateOrderService>());
             services.TryAdd(ServiceDescriptor.Singleton<IProcessOrderService, ProcessOrderService>());
-            services.TryAdd(ServiceDescriptor.Singleton<IOrderData, OrderData>());
+            services.TryAdd(ServiceDescriptor.Singleton<IOrderData, OrderDataDB>());
             
         }
 
