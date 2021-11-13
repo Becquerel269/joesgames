@@ -46,6 +46,13 @@ namespace AspNetCoreSerilogExample.Web
 
             app.UseRouting();
 
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials()); // allow credentials
+
             // Absolute minimum setup, just return "Hello world!" to browser.
             // You can use Controllers, SPA routing, SignalR, etc. routing.
             app.UseEndpoints(endpoints =>

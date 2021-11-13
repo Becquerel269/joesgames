@@ -9,7 +9,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class OrderData : IOrderData
     {
-        
+
 
         public bool EnsureFileExists(string filepath)
         {
@@ -67,7 +67,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
                 //update order
                 matchingOrder = order;
             }
-            else 
+            else
             {
                 orders?.Add(order);
             }
