@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public interface IOrderData
     {
-        IOrder GetOrder(string id);
+        Task<IOrderDTO> GetOrder(string orderId);
 
-        IOrder SubmitOrder(Order order);
+        Task<IOrderDTO> SubmitOrder(OrderDTO orderDto);
 
-        List<Order> GetOrders();
-
-        bool EnsureFileExists(string filepath);
+        Task<List<OrderDTO>> GetOrders();
     }
 }

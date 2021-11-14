@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using AspNetCoreSerilogExample.Web.Data.Models;
+﻿using AspNetCoreSerilogExample.Web.Data.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AspNetCoreSerilogExample.Web.Services.Processing
 {
     public interface IProcessOrderService
     {
-        IOrder SubmitOrder(Order order);
+        Task<IOrderDTO> SubmitOrder(OrderDTO orderdto);
 
-        IOrder GetOrder(string id);
+        Task<IOrderDTO> GetOrder(string id);
 
-        List<Order> GetOrders();
+        Task<List<OrderDTO>> GetOrders();
     }
 }

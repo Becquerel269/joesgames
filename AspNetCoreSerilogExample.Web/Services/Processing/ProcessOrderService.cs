@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using AspNetCoreSerilogExample.Web.Data.Models;
+﻿using AspNetCoreSerilogExample.Web.Data.Models;
 using AspNetCoreSerilogExample.Web.Services.Validation;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AspNetCoreSerilogExample.Web.Services.Processing
 {
@@ -9,43 +10,36 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
     {
         private readonly IValidateOrderService _validateOrderService;
         private readonly IOrderData _orderData;
-        
 
         public ProcessOrderService(IValidateOrderService validateOrderService, IOrderData orderData)
         {
             _validateOrderService = validateOrderService;
             _orderData = orderData;
-            
         }
 
-        public IOrder GetOrder(string id)
+        public async Task<IOrderDTO> GetOrder(string id)
         {
-
             if (id == null)
             {
                 throw new ArgumentNullException("id must not be null");
             }
-            
-            return _orderData.GetOrder(id);
+
+            return await _orderData.GetOrder(id);
         }
 
-        
-
-        public IOrder SubmitOrder(Order order)
+        public async Task<IOrderDTO> SubmitOrder(OrderDTO orderdto)
         {
-           
-            if (_validateOrderService.IsOrderValid(order) == false)
+            if (_validateOrderService.IsOrderValid(orderdto) == false)
             {
                 return null;
             }
-            
 
-            return _orderData.SubmitOrder(order);
+            return await _orderData.SubmitOrder(orderdto);
         }
 
-        public List<Order> GetOrders()
+        public async Task<List<OrderDTO>> GetOrders()
         {
-            return _orderData.GetOrders();
+            return await _orderData.GetOrders();
         }
     }
 }

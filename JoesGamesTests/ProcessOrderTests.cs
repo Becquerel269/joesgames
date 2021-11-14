@@ -2,20 +2,18 @@
 using AspNetCoreSerilogExample.Web.Services.Processing;
 using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
-using Moq;
 
 namespace JoesGamesTests.ProcessOrderTests
 {
     [TestClass]
     public class ProcessOrderTests
     {
-        private Order validOrder;
-        private Order invalidOrder;
+        private OrderDTO validOrderDto;
+        private OrderDTO invalidOrderDto;
         private IProcessOrderService _processOrderService;
         private IValidateOrderService _validateOrderService;
         private readonly Mock<IOrderData> _mockIOrderData = new Mock<IOrderData>();
@@ -25,22 +23,17 @@ namespace JoesGamesTests.ProcessOrderTests
         {
             _validateOrderService = new ValidateOrderService();
 
-
             _processOrderService = new ProcessOrderService(_validateOrderService, _mockIOrderData.Object);
-            string[] items = {"item1", "item2"};
-            validOrder = new Order()
+            string[] items = { "item1", "item2" };
+            validOrderDto = new OrderDTO()
             {
                 Name = "validname",
                 Id = "1",
-                Items = items
             };
-            invalidOrder = new Order
+            invalidOrderDto = new OrderDTO()
             {
                 Name = null,
                 Id = null,
-                Items = new string[]
-                {
-                }
             };
         }
 
@@ -48,28 +41,23 @@ namespace JoesGamesTests.ProcessOrderTests
         public void ProcessOrder_ReturnsTrue_WithValidOrder()
         {
             // Arrange
-            _mockIOrderData.Setup(p => p.SubmitOrder(validOrder)).Returns(validOrder);
-
+            _mockIOrderData.Setup(p => p.SubmitOrder(validOrderDto)).ReturnsAsync(validOrderDto);
 
             // Act
-            var result = _processOrderService.SubmitOrder(validOrder);
+            var result = _processOrderService.SubmitOrder(validOrderDto).GetAwaiter().GetResult();
 
             // Assert
-            Assert.AreEqual(validOrder.Id, result.Id);
-            Assert.AreEqual(validOrder.Name, result.Name);
-            Assert.AreEqual(validOrder.Items[0], result.Items[0]);
-            Assert.AreEqual(validOrder.Items[1], result.Items[1]);
+            Assert.AreEqual(validOrderDto.Id, result.Id);
+            Assert.AreEqual(validOrderDto.Name, result.Name);
         }
 
         [TestMethod]
-
         public void ProcessOrder_ReturnsFalse_WhenOrderNameNotSupplied()
         {
             // Arrange
 
-
             // Act
-            var result = _processOrderService.SubmitOrder(invalidOrder);
+            var result = _processOrderService.SubmitOrder(invalidOrderDto).GetAwaiter().GetResult();
 
             // Assert
             Assert.IsNull(result);
@@ -79,7 +67,7 @@ namespace JoesGamesTests.ProcessOrderTests
         public void ProcessOrder_ReturnsNull_WithNull()
         {
             // Act
-            var result = _processOrderService.SubmitOrder(null);
+            var result = _processOrderService.SubmitOrder(null).GetAwaiter().GetResult();
 
             // Assert
             Assert.IsNull(result);
@@ -90,23 +78,20 @@ namespace JoesGamesTests.ProcessOrderTests
         {
             //Arrange
 
-
-            string[] items = {"item1", "item2"};
-            IOrder expectOrder = new Order(
+            IOrderDTO expectOrderdto = new OrderDTO(
 
                 name: "order1",
                 id: "1",
-                items: items
+                items: new List<OrderItem>()
+
             );
-            _mockIOrderData.Setup(p => p.GetOrder(expectOrder.Id)).Returns(expectOrder);
+            _mockIOrderData.Setup(p => p.GetOrder(expectOrderdto.Id)).ReturnsAsync(expectOrderdto);
             // Act
-            var result = _processOrderService.GetOrder(expectOrder.Id);
+            var result = _processOrderService.GetOrder(expectOrderdto.Id).GetAwaiter().GetResult();
 
             // Assert
-            Assert.AreEqual(expectOrder.Id, result.Id);
-            Assert.AreEqual(expectOrder.Name, result.Name);
-            Assert.AreEqual(expectOrder.Items[0], result.Items[0]);
-            Assert.AreEqual(expectOrder.Items[1], result.Items[1]);
+            Assert.AreEqual(expectOrderdto.Id, result.Id);
+            Assert.AreEqual(expectOrderdto.Name, result.Name);
         }
 
         [TestMethod]
@@ -127,21 +112,18 @@ namespace JoesGamesTests.ProcessOrderTests
             "id must not be null")]
         public void GetOrder_Throws_WithNullId()
         {
-
             // Act
-            var result = _processOrderService.GetOrder(null);
-
-
+            var result = _processOrderService.GetOrder(null).GetAwaiter().GetResult();
         }
 
         [TestMethod]
         public void GetOrders_ReturnsEmptyList_WithNoOrders()
         {
             //Arrange
-            _mockIOrderData.Setup(p => p.GetOrders()).Returns(new List<Order>());
+            _mockIOrderData.Setup(p => p.GetOrders()).ReturnsAsync(new List<OrderDTO>());
 
             // Act
-            var result = _processOrderService.GetOrders();
+            var result = _processOrderService.GetOrders().GetAwaiter().GetResult();
 
             // Assert
             Assert.IsTrue(result.Count == 0);
@@ -151,35 +133,31 @@ namespace JoesGamesTests.ProcessOrderTests
         public void GetOrders_ReturnsListOfOrder_WithSomeOrders()
         {
             //Arrange
-            List<Order> expectedOrders = new List<Order>();
-            string[] firstOrderItems = {"item1", "item2"};
-            var orderOne = new Order()
+            List<OrderDTO> expectedOrders = new List<OrderDTO>();
+            string[] firstOrderItems = { "item1", "item2" };
+            var orderOne = new OrderDTO()
             {
                 Name = "order1",
                 Id = "1",
-                Items = firstOrderItems
             };
-            string[] secondOrderItems = {"item3", "item4"};
-            var orderTwo = new Order()
+            string[] secondOrderItems = { "item3", "item4" };
+            var orderTwo = new OrderDTO()
             {
                 Name = "order2",
                 Id = "2",
-                Items = secondOrderItems
             };
             expectedOrders.Add(orderOne);
             expectedOrders.Add(orderTwo);
 
-            _mockIOrderData.Setup(p => p.GetOrders()).Returns(expectedOrders);
-
+            _mockIOrderData.Setup(p => p.GetOrders()).ReturnsAsync(expectedOrders);
 
             // Act
-            var result = _processOrderService.GetOrders();
+            var result = _processOrderService.GetOrders().GetAwaiter().GetResult();
 
             // Assert
             Assert.IsTrue(result.Count == 2);
             Assert.AreEqual(orderOne.Name, result.First().Name);
             Assert.AreEqual(orderTwo.Name, result.Last().Name);
         }
-
     }
 }

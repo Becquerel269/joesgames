@@ -5,13 +5,13 @@ namespace AspNetCoreSerilogExample.Web.Services.Validation
 {
     public class ValidateOrderService : IValidateOrderService
     {
-        public bool IsOrderValid(IOrder order)
+        public bool IsOrderValid(IOrderDTO orderdto)
         {
-            if (order == null)
+            if (orderdto == null)
             {
                 return false;
             }
-            if (IsNullOrWhiteSpace(order.Name))
+            if (IsNullOrWhiteSpace(orderdto.Name))
             {
                 return false;
             }

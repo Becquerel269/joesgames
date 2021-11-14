@@ -1,13 +1,11 @@
 ﻿using AspNetCoreSerilogExample.Web.Data.Models;
 using AspNetCoreSerilogExample.Web.Services.Processing;
 using AspNetCoreSerilogExample.Web.Services.Validation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace AspNetCoreSerilogExample.Web.Controllers
 {
@@ -15,37 +13,37 @@ namespace AspNetCoreSerilogExample.Web.Controllers
     public class TestController : ControllerBase
     {
         private readonly ILogger<TestController> _logger;
-        
+
         private readonly IProcessOrderService _processOrderService;
 
         public TestController(ILogger<TestController> logger, IValidateOrderService validateOrderService, IProcessOrderService processOrderService)
         {
             _logger = logger;
-            
+
             _processOrderService = processOrderService;
         }
 
         [HttpPost]
         [Route("api/orders")]
-        public ActionResult<IOrder> Add([FromBody]Order order)
+        public async Task<ActionResult<IOrder>> Add([FromBody] OrderDTO orderdto)
         {
-            _logger.LogInformation($"Input text: {order.Name}");
+            _logger.LogInformation($"Input text: {orderdto.Name}");
 
-            var returnedOrder = _processOrderService.SubmitOrder(order);
+            var returnedOrder = await _processOrderService.SubmitOrder(orderdto);
             if (returnedOrder == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
             return Ok(returnedOrder);
         }
-        
+
         [HttpPut]
         [Route("api/orders")]
-        public ActionResult<IOrder> Update([FromBody]Order order)
+        public async Task<ActionResult<IOrder>> Update([FromBody] OrderDTO orderdto)
         {
-            _logger.LogInformation($"Input text: {order.Name}");
+            _logger.LogInformation($"Input text: {orderdto.Name}");
 
-            var updatedOrder = _processOrderService.SubmitOrder(order);
+            var updatedOrder = await _processOrderService.SubmitOrder(orderdto);
             if (updatedOrder == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -57,22 +55,20 @@ namespace AspNetCoreSerilogExample.Web.Controllers
         [HttpGet]
         [Route("api/orders/{id}")]
         [Produces("application/json")]
-        public ActionResult<IOrder> GetById(string id)
+        public async Task<ActionResult<IOrder>> GetById(string id)
         {
-            
             _logger.LogInformation(
                 "Input text: {Input}",
                 id);
-            return Ok(_processOrderService.GetOrder(id));
+            return Ok(await _processOrderService.GetOrder(id));
         }
+
         [HttpGet]
         [Route("api/orders")]
         [Produces("application/json")]
-        public ActionResult<List<Order>> GetOrders()
+        public async Task<ActionResult<List<Order>>> GetOrders()
         {
-
-            
-            return Ok(_processOrderService.GetOrders());
+            return Ok(await _processOrderService.GetOrders());
         }
     }
 }

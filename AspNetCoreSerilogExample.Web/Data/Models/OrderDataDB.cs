@@ -1,85 +1,93 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 
 namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class OrderDataDB : IOrderData
     {
-        string connectionString = @"Data Source=USER-PC\SQLEXPRESS;Initial Catalog=JoesGames;Integrated Security=true";
-        public IOrder GetOrder(string id)
+        private const string connectionString = "Data Source=RYZEN-MEGA-BOX;Initial Catalog=JoesGames;Integrated Security=true";
+
+        public async Task<IOrderDTO> GetOrder(string orderId)
         {
+            using IDbConnection con = new SqlConnection(connectionString);
+            con.Open();
+            var parameters = new { OrderId = orderId };
+            const string orderQuery = @"SELECT * FROM [dbo].[orders] WHERE ID = @OrderId";
+            var order = (await con.QueryAsync<Order>(orderQuery, parameters)).FirstOrDefault();
 
+            const string orderItemQuery = "SELECT * FROM [dbo].[OrderItems] WHERE OrderID = @OrderId";
+            var orderItems = await con.QueryAsync<OrderItem>(orderItemQuery, parameters);
 
-            using (SqlConnection con = new SqlConnection(connectionString))
+            var orderDto = new OrderDTO
             {
-                con.Open();
-
-                string query = @"SELECT * FROM [dbo].[orders] WHERE ID = @id ";
-                con.Execute(query, new {ID = id});
-
-
-                var order = con.Query<Order>(query);
-                return order.FirstOrDefault(p => p.Id == id);
-            }
+                Name = order.Name,
+                Id = order.Id,
+                Items = orderItems.ToList()
+            };
+            return orderDto;
         }
 
-        public IOrder SubmitOrder(Order order)
+        public async Task<IOrderDTO> SubmitOrder(OrderDTO orderDto)
         {
-            if (order.Id == null)
+            orderDto.Id ??= Guid.NewGuid().ToString();
+            using IDbConnection con = new SqlConnection(connectionString);
+
+            con.Open();
+            var orderQueryParameters = new { Id = orderDto.Id, Name = orderDto.Name };
+            const string orderQuery = @"INSERT INTO [dbo].[orders] (ID, Name) VALUES(@Id, @Name)";
+
+            await con.QueryAsync<Order>(orderQuery, orderQueryParameters);
+            var addedOrder = await GetOrder(orderDto.Id);
+            var itemResults = new List<OrderItem>();
+            //throw if table is deleted
+            const string orderItemQuery = @"INSERT INTO [dbo].[OrderItems] (ID, OrderID, Name) VALUES(@Id, @OrderId, @Name)";
+            foreach (var orderItem in orderDto.Items)
             {
-                order.Id = Guid.NewGuid().ToString();
-            }
-            using (IDbConnection con = new SqlConnection(connectionString))
-            {
-                con.Open();
-
-                string query = @"INSERT INTO dbo.orders (ID, Name, Items) VALUES(@Id, @Name, @Items)";
-
-                int rowsAffected = con.Execute(query, order);
-
-
-                return order;
-            }
-        }
-
-        public List<Order> GetOrders()
-        {
-
-
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                con.Open();
-                string query = @"SELECT * FROM dbo.orders ";
-                //using (SqlCommand command = new SqlCommand(query, con))
-                //using (SqlDataReader reader = command.ExecuteReader())
-                //{
-                //    while (reader.Read())
-                //    {
-
-                //        Console.WriteLine("reading");
-
-                //    }
-                //}
-                var orders = con.Query<Order>(query).ToList();
-                return orders;
+                orderItem.Id ??= Guid.NewGuid().ToString();
+                var orderItemQueryParameters = new { Id = orderItem.Id, OrderId = orderDto.Id, Name = orderItem.Name };
+                (await con.QueryAsync<OrderItem>(orderItemQuery, orderItemQueryParameters)).FirstOrDefault();
+                var addedOrderItem = await GetOrderItem(orderItem.Id);
+                itemResults.Add(addedOrderItem);
             }
 
+            var addedOrderDto = new OrderDTO
+            {
+                Id = addedOrder.Id,
+                Name = addedOrder.Name,
+                Items = itemResults
+            };
 
-            //h/w
-            //research DAPPER
-            //research ASYNC
-            //look at fixing the other methods in this class as above
-            //research extension methods & create extension method for string to check if string has only white space or is null called 'isnullorblank' .isnullorblank()
+            return addedOrderDto;
         }
 
-        public bool EnsureFileExists(string filepath)
+        public async Task<List<OrderDTO>> GetOrders()
         {
-            throw new NotImplementedException();
+            using var con = new SqlConnection(connectionString);
+            con.Open();
+            const string query = @"SELECT * FROM dbo.orders ";
+            var orders = (await con.QueryAsync<OrderDTO>(query)).ToList();
+            return orders;
+            
         }
+
+
+        private async Task<OrderItem> GetOrderItem(string orderItemId)
+        {
+            using IDbConnection con = new SqlConnection(connectionString);
+            con.Open();
+            var parameters = new { OrderItemId = orderItemId };
+            const string orderItemQuery = "SELECT * FROM [dbo].[OrderItems] WHERE ID = @OrderItemId";
+            return (await con.QueryAsync<OrderItem>(orderItemQuery, parameters)).FirstOrDefault();
+        }
+
+        //delete method for order and orderitems
+        //in business layer for update, add a check for if order exists before calling submit in data layer
+        //auto-mapping
+        //research extension methods & create extension method for string to check if string has only white space or is null called 'isnullorblank' .isnullorblank()
     }
 }

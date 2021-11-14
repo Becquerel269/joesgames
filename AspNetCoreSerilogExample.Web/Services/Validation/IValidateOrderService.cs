@@ -4,6 +4,6 @@ namespace AspNetCoreSerilogExample.Web.Services.Validation
 {
     public interface IValidateOrderService
     {
-        bool IsOrderValid(IOrder order);
+        bool IsOrderValid(IOrderDTO orderdto);
     }
 }
