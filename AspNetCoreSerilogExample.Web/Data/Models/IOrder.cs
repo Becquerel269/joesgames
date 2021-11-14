@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
 
-#nullable enable
 namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public interface IOrder

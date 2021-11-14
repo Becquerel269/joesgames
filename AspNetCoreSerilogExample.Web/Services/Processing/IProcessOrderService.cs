@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using AspNetCoreSerilogExample.Web.Data.Models;
+﻿using AspNetCoreSerilogExample.Web.Data.Models;
+using System.Collections.Generic;
 
 namespace AspNetCoreSerilogExample.Web.Services.Processing
 {

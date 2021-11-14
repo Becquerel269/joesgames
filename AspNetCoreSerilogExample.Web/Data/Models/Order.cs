@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class Order : IOrder
     {
-        
-
         [JsonPropertyName(name: "Name")]
         public string Name { get; set; }
 
@@ -23,10 +19,8 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 
         public Order(string name, string id)
         {
-
             Name = name;
             Id = id;
-
         }
     }
 }

@@ -1,13 +1,10 @@
 ﻿using AspNetCoreSerilogExample.Web.Data.Models;
 using AspNetCoreSerilogExample.Web.Services.Processing;
 using AspNetCoreSerilogExample.Web.Services.Validation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace AspNetCoreSerilogExample.Web.Controllers
 {
@@ -15,19 +12,19 @@ namespace AspNetCoreSerilogExample.Web.Controllers
     public class TestController : ControllerBase
     {
         private readonly ILogger<TestController> _logger;
-        
+
         private readonly IProcessOrderService _processOrderService;
 
         public TestController(ILogger<TestController> logger, IValidateOrderService validateOrderService, IProcessOrderService processOrderService)
         {
             _logger = logger;
-            
+
             _processOrderService = processOrderService;
         }
 
         [HttpPost]
         [Route("api/orders")]
-        public ActionResult<IOrder> Add([FromBody]OrderDTO orderdto)
+        public ActionResult<IOrder> Add([FromBody] OrderDTO orderdto)
         {
             _logger.LogInformation($"Input text: {orderdto.Name}");
 
@@ -38,10 +35,10 @@ namespace AspNetCoreSerilogExample.Web.Controllers
             }
             return Ok(returnedOrder);
         }
-        
+
         [HttpPut]
         [Route("api/orders")]
-        public ActionResult<IOrder> Update([FromBody]OrderDTO orderdto)
+        public ActionResult<IOrder> Update([FromBody] OrderDTO orderdto)
         {
             _logger.LogInformation($"Input text: {orderdto.Name}");
 
@@ -59,19 +56,17 @@ namespace AspNetCoreSerilogExample.Web.Controllers
         [Produces("application/json")]
         public ActionResult<IOrder> GetById(string id)
         {
-            
             _logger.LogInformation(
                 "Input text: {Input}",
                 id);
             return Ok(_processOrderService.GetOrder(id));
         }
+
         [HttpGet]
         [Route("api/orders")]
         [Produces("application/json")]
         public ActionResult<List<Order>> GetOrders()
         {
-
-            
             return Ok(_processOrderService.GetOrders());
         }
     }

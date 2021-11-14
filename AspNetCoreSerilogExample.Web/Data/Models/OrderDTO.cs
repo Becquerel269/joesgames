@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace AspNetCoreSerilogExample.Web.Data.Models
 {
@@ -19,11 +16,10 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 
         public OrderDTO()
         {
-
         }
+
         public OrderDTO(string name, string id, List<OrderItem> items)
         {
-
             Name = name;
             Id = id;
             Items = items;

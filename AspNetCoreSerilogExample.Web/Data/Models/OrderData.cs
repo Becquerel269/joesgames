@@ -1,5 +1,4 @@
-﻿using AspNetCoreSerilogExample.Web.Services.Processing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,8 +8,6 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class OrderData : IOrderData
     {
-
-
         public bool EnsureFileExists(string filepath)
         {
             if (File.Exists(filepath))
@@ -24,7 +21,6 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             catch (Exception e)
             {
                 Console.WriteLine($"unable to create file with filepath {filepath}");
-
             }
 
             return false;
@@ -40,7 +36,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             return orders?.FirstOrDefault(p => p.Id == orderId);
         }
 
-        public IOrderDTO SubmitOrder(OrderDTO orderdto)
+        public IOrderDTO SubmitOrder(OrderDTO orderDto)
         {
             if (GetFilepath(out var filepath)) return null;
             var myJsonString = File.ReadAllText(filepath);
@@ -52,31 +48,29 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             var orders = JsonSerializer.Deserialize<List<OrderDTO>>(myJsonString);
 
             IOrderDTO matchingOrder = null;
-            if (orderdto.Id == null)
+            if (orderDto.Id == null)
             {
-                orderdto.Id = GetNewId(orderdto, orders);
+                orderDto.Id = GetNewId(orderDto, orders);
             }
             else
             {
-                matchingOrder = orders.FirstOrDefault(p => p.Id == orderdto.Id);
+                matchingOrder = orders.FirstOrDefault(p => p.Id == orderDto.Id);
             }
-
 
             if (matchingOrder != null)
             {
                 //update order
-                matchingOrder = orderdto;
+                matchingOrder = orderDto;
             }
             else
             {
-                orders?.Add(orderdto);
+                orders?.Add(orderDto);
             }
 
             string serializedOrders = JsonSerializer.Serialize(orders);
             File.WriteAllText(filepath, serializedOrders);
 
-            return orderdto;
-
+            return orderDto;
         }
 
         public List<OrderDTO> GetOrders()

@@ -6,7 +6,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
     {
         IOrderDTO GetOrder(string orderId);
 
-        IOrderDTO SubmitOrder(OrderDTO orderdto);
+        IOrderDTO SubmitOrder(OrderDTO orderDto);
 
         List<OrderDTO> GetOrders();
 

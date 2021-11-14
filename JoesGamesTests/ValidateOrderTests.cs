@@ -1,7 +1,6 @@
 using AspNetCoreSerilogExample.Web.Data.Models;
 using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace JoesGamesTests
 {
@@ -20,13 +19,11 @@ namespace JoesGamesTests
             {
                 Name = "validname",
                 Id = "1"
-                
             };
             invalidOrderDto = new OrderDTO()
             {
                 Name = null,
                 Id = null
-               
             };
         }
 
@@ -34,7 +31,6 @@ namespace JoesGamesTests
         public void IsOrderValid_ReturnsTrue_WithValidOrder()
         {
             // Arrange
-            
 
             // Act
             var result = _validateOrderService.IsOrderValid(validOrderDto);
@@ -47,7 +43,6 @@ namespace JoesGamesTests
         public void IsOrderValid_ReturnsFalse_WithNotValidOrder()
         {
             // Arrange
-            
 
             // Act
             var result = _validateOrderService.IsOrderValid(invalidOrderDto);
