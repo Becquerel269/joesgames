@@ -85,9 +85,11 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             return (await con.QueryAsync<OrderItem>(orderItemQuery, parameters)).FirstOrDefault();
         }
 
+        //h/w
         //delete method for order and orderitems
         //in business layer for update, add a check for if order exists before calling submit in data layer
-        //auto-mapping
+        //auto-mapping, deal with throws, get rid of singletons in the DI
         //research extension methods & create extension method for string to check if string has only white space or is null called 'isnullorblank' .isnullorblank()
+
     }
 }
