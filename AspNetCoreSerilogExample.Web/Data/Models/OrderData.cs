@@ -8,24 +8,6 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class OrderData : IOrderData
     {
-        public bool EnsureFileExists(string filepath)
-        {
-            if (File.Exists(filepath))
-            {
-                return true;
-            }
-            try
-            {
-                File.Create(filepath);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"unable to create file with filepath {filepath}");
-            }
-
-            return false;
-        }
-
         public IOrderDTO GetOrder(string orderId)
         {
             if (GetFilepath(out var filepath)) return null;
@@ -106,6 +88,23 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             if (!fileokay)
             {
                 return true;
+            }
+
+            return false;
+        }
+        private bool EnsureFileExists(string filepath)
+        {
+            if (File.Exists(filepath))
+            {
+                return true;
+            }
+            try
+            {
+                File.Create(filepath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"unable to create file with filepath {filepath}");
             }
 
             return false;

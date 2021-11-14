@@ -40,15 +40,15 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             var orderQueryParameters = new { Id = orderDto.Id, Name = orderDto.Name };
             const string orderQuery = @"INSERT INTO [dbo].[orders] (ID, Name) VALUES(@Id, @Name)";
 
-            var result = con.Query<Order>(orderQuery, orderQueryParameters);
+            con.Query<Order>(orderQuery, orderQueryParameters);
             var addedOrder = GetOrder(orderDto.Id);
             var itemResults = new List<OrderItem>();
-
+            //throw if table is deleted
+            const string orderItemQuery = @"INSERT INTO [dbo].[OrderItems] (ID, OrderID, Name) VALUES(@Id, @OrderId, @Name)";
             foreach (var orderItem in orderDto.Items)
             {
                 orderItem.Id ??= Guid.NewGuid().ToString();
                 var orderItemQueryParameters = new { Id = orderItem.Id, OrderId = orderDto.Id, Name = orderItem.Name };
-                const string orderItemQuery = @"INSERT INTO [dbo].[OrderItems] (ID, OrderID, Name) VALUES(@Id, @OrderId, @Name)";
                 con.Query<OrderItem>(orderItemQuery, orderItemQueryParameters).FirstOrDefault();
                 var addedOrderItem = GetOrderItem(orderItem.Id);
                 itemResults.Add(addedOrderItem);
@@ -74,10 +74,6 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             //research extension methods & create extension method for string to check if string has only white space or is null called 'isnullorblank' .isnullorblank()
         }
 
-        public bool EnsureFileExists(string filepath)
-        {
-            throw new NotImplementedException();
-        }
 
         private static OrderItem GetOrderItem(string orderItemId)
         {
@@ -87,5 +83,9 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             const string orderItemQuery = "SELECT * FROM [dbo].[OrderItems] WHERE ID = @OrderItemId";
             return con.Query<OrderItem>(orderItemQuery, parameters).FirstOrDefault();
         }
+
+        //delete method for order and orderitems
+        //in business layer for update, add a check for if order exists before calling submit in data layer
+        //auto-mapping
     }
 }

@@ -9,7 +9,5 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
         IOrderDTO SubmitOrder(OrderDTO orderDto);
 
         List<OrderDTO> GetOrders();
-
-        bool EnsureFileExists(string filepath);
     }
 }
