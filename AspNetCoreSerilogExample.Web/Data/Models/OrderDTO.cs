@@ -1,32 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace AspNetCoreSerilogExample.Web.Data.Models
 {
-    public class Order : IOrder
+    public class OrderDTO : IOrderDTO
     {
-        
-
         [JsonPropertyName(name: "Name")]
         public string Name { get; set; }
 
         [JsonPropertyName(name: "Id")]
         public string Id { get; set; }
 
-        //[JsonPropertyName(name: "Items")]
-        //public IList<string> Items { get; set; }
+        [JsonPropertyName(name: "Items")]
+        public List<OrderItem> Items { get; set; }
 
-        public Order()
+        public OrderDTO()
         {
-        }
 
-        public Order(string name, string id)
+        }
+        public OrderDTO(string name, string id, List<OrderItem> items)
         {
 
             Name = name;
             Id = id;
-
+            Items = items;
         }
     }
 }

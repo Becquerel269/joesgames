@@ -30,17 +30,17 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             return false;
         }
 
-        public IOrder GetOrder(string id)
+        public IOrderDTO GetOrder(string orderId)
         {
             if (GetFilepath(out var filepath)) return null;
             var myJsonString = File.ReadAllText(filepath);
 
-            List<Order> orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
+            List<OrderDTO> orders = JsonSerializer.Deserialize<List<OrderDTO>>(myJsonString);
 
-            return orders?.FirstOrDefault(p => p.Id == id);
+            return orders?.FirstOrDefault(p => p.Id == orderId);
         }
 
-        public IOrder SubmitOrder(Order order)
+        public IOrderDTO SubmitOrder(OrderDTO orderdto)
         {
             if (GetFilepath(out var filepath)) return null;
             var myJsonString = File.ReadAllText(filepath);
@@ -49,58 +49,58 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
                 myJsonString = "[]";
             }
 
-            var orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
+            var orders = JsonSerializer.Deserialize<List<OrderDTO>>(myJsonString);
 
-            IOrder matchingOrder = null;
-            if (order.Id == null)
+            IOrderDTO matchingOrder = null;
+            if (orderdto.Id == null)
             {
-                order.Id = GetNewId(order, orders);
+                orderdto.Id = GetNewId(orderdto, orders);
             }
             else
             {
-                matchingOrder = orders.FirstOrDefault(p => p.Id == order.Id);
+                matchingOrder = orders.FirstOrDefault(p => p.Id == orderdto.Id);
             }
 
 
             if (matchingOrder != null)
             {
                 //update order
-                matchingOrder = order;
+                matchingOrder = orderdto;
             }
             else
             {
-                orders?.Add(order);
+                orders?.Add(orderdto);
             }
 
             string serializedOrders = JsonSerializer.Serialize(orders);
             File.WriteAllText(filepath, serializedOrders);
 
-            return order;
+            return orderdto;
 
         }
 
-        public List<Order> GetOrders()
+        public List<OrderDTO> GetOrders()
         {
             if (GetFilepath(out var filepath)) return null;
             var myJsonString = File.ReadAllText(filepath);
 
-            var orders = JsonSerializer.Deserialize<List<Order>>(myJsonString);
+            var orders = JsonSerializer.Deserialize<List<OrderDTO>>(myJsonString);
             return orders;
         }
 
-        private static string GetNewId(IOrder order, List<Order> orders)
+        private static string GetNewId(IOrderDTO orderdto, List<OrderDTO> orders)
         {
             if (orders.Count == 0)
             {
-                order.Id = "1";
+                orderdto.Id = "1";
             }
             else
             {
                 var currentMax = orders.Max(p => int.Parse(p.Id));
-                order.Id = (currentMax + 1).ToString();
+                orderdto.Id = (currentMax + 1).ToString();
             }
 
-            return order.Id;
+            return orderdto.Id;
         }
 
         private bool GetFilepath(out string filepath)

@@ -10,62 +10,88 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class OrderDataDB : IOrderData
     {
-        string connectionString = @"Data Source=USER-PC\SQLEXPRESS;Initial Catalog=JoesGames;Integrated Security=true";
-        public IOrder GetOrder(string id)
+        string connectionString = "Data Source=RYZEN-MEGA-BOX;Initial Catalog=JoesGames;Integrated Security=true";
+        public IOrderDTO GetOrder(string orderId)
         {
 
 
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                con.Open();
-
-                string query = @"SELECT * FROM [dbo].[orders] WHERE ID = @id ";
-                con.Execute(query, new {ID = id});
-
-
-                var order = con.Query<Order>(query);
-                return order.FirstOrDefault(p => p.Id == id);
-            }
-        }
-
-        public IOrder SubmitOrder(Order order)
-        {
-            if (order.Id == null)
-            {
-                order.Id = Guid.NewGuid().ToString();
-            }
             using (IDbConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
+                var parameters = new { OrderId = orderId };
+                string orderQuery = @"SELECT * FROM [dbo].[orders] WHERE ID = @OrderId";
+                var order = con.Query<Order>(orderQuery, parameters).FirstOrDefault();
 
-                string query = @"INSERT INTO dbo.orders (ID, Name, Items) VALUES(@Id, @Name, @Items)";
 
-                int rowsAffected = con.Execute(query, order);
-
-
-                return order;
+  
+                
+                
+                string orderItemQuery = "SELECT * FROM [dbo].[OrderItems] WHERE OrderID = @OrderId";
+                var orderItems = con.Query<OrderItem>(orderItemQuery, parameters);
+                //var orderItems2 = con.Query<OrderItem>(orderItemQuery, parameters).FirstOrDefault();
+                var orderDto = new OrderDTO
+                {
+                    Name = order.Name,
+                    Id = order.Id,
+                    Items = orderItems.ToList()
+                };
+                return orderDto;
+                //return order.FirstOrDefault(p => p.Id == orderId);
             }
         }
 
-        public List<Order> GetOrders()
+        public IOrderDTO SubmitOrder(OrderDTO orderdto)
+        {
+            if (orderdto.Id == null)
+            {
+                orderdto.Id = Guid.NewGuid().ToString();
+            }
+            using (IDbConnection con = new SqlConnection(connectionString))
+            {
+
+                con.Open();
+                var orderQueryParameters = new {Id = orderdto.Id, Name = orderdto.Name};
+                var orderQuery = @"INSERT INTO [dbo].[orders] (ID, Name) VALUES(@Id, @Name)";
+
+                var result = con.Query<Order>(orderQuery, orderQueryParameters);
+
+                var addedOrder = GetOrder(orderdto.Id);
+
+                var itemResults = new List<OrderItem>();
+                foreach (var orderItem in orderdto.Items)
+                {
+                    orderItem.Id ??= Guid.NewGuid().ToString();
+                    var orderItemQueryParameters = new { Id = orderItem.Id,  OrderId = orderdto.Id, Name = orderItem.Name };
+                    var orderItemQuery =
+                        @"INSERT INTO [dbo].[OrderItems] (ID, OrderID, Name) VALUES(@Id, @OrderId, @Name)";
+                    con.Query<OrderItem>(orderItemQuery, orderItemQueryParameters).FirstOrDefault();
+                    var addedOrderItem = GetOrderItem(orderItem.Id);
+                    itemResults.Add(addedOrderItem);
+                    
+                }
+
+                var addedOrderDto = new OrderDTO
+                {
+                    Id = addedOrder.Id,
+                    Name = addedOrder.Name,
+                    Items = itemResults
+                };
+
+
+                return addedOrderDto;
+            }
+        }
+
+        public List<OrderDTO> GetOrders()
         {
 
 
-            using (SqlConnection con = new SqlConnection(connectionString))
+            using (var con = new SqlConnection(connectionString))
             {
                 con.Open();
-                string query = @"SELECT * FROM dbo.orders ";
-                //using (SqlCommand command = new SqlCommand(query, con))
-                //using (SqlDataReader reader = command.ExecuteReader())
-                //{
-                //    while (reader.Read())
-                //    {
-
-                //        Console.WriteLine("reading");
-
-                //    }
-                //}
-                var orders = con.Query<Order>(query).ToList();
+                var query = @"SELECT * FROM dbo.orders ";
+                
+                var orders = con.Query<OrderDTO>(query).ToList();
                 return orders;
             }
 
@@ -80,6 +106,15 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
         public bool EnsureFileExists(string filepath)
         {
             throw new NotImplementedException();
+        }
+
+        private OrderItem GetOrderItem(string orderItemId)
+        {
+            using IDbConnection con = new SqlConnection(connectionString);
+            con.Open();
+            var parameters = new { OrderItemId = orderItemId };
+            string orderItemQuery = "SELECT * FROM [dbo].[OrderItems] WHERE ID = @OrderItemId";
+            return con.Query<OrderItem>(orderItemQuery, parameters).FirstOrDefault();
         }
     }
 }

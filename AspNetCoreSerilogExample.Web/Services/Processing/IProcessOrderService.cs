@@ -5,10 +5,10 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
 {
     public interface IProcessOrderService
     {
-        IOrder SubmitOrder(Order order);
+        IOrderDTO SubmitOrder(OrderDTO orderdto);
 
-        IOrder GetOrder(string id);
+        IOrderDTO GetOrder(string id);
 
-        List<Order> GetOrders();
+        List<OrderDTO> GetOrders();
     }
 }

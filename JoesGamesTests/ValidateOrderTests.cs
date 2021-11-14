@@ -9,26 +9,24 @@ namespace JoesGamesTests
     public class ValidateOrderTests
     {
         private ValidateOrderService _validateOrderService;
-        private IOrder validOrder;
-        private IOrder invalidOrder;
+        private IOrderDTO validOrderDto;
+        private IOrderDTO invalidOrderDto;
 
         [TestInitialize]
         public void TestInitialize()
         {
             _validateOrderService = new ValidateOrderService();
-            validOrder = new Order()
+            validOrderDto = new OrderDTO()
             {
                 Name = "validname",
-                Id = "1",
-                Items = Array.Empty<string>()
+                Id = "1"
+                
             };
-            invalidOrder = new Order
+            invalidOrderDto = new OrderDTO()
             {
                 Name = null,
-                Id = null,
-                Items = new string[]
-                {
-                }
+                Id = null
+               
             };
         }
 
@@ -39,7 +37,7 @@ namespace JoesGamesTests
             
 
             // Act
-            var result = _validateOrderService.IsOrderValid(validOrder);
+            var result = _validateOrderService.IsOrderValid(validOrderDto);
 
             // Assert
             Assert.IsTrue(result);
@@ -52,7 +50,7 @@ namespace JoesGamesTests
             
 
             // Act
-            var result = _validateOrderService.IsOrderValid(invalidOrder);
+            var result = _validateOrderService.IsOrderValid(invalidOrderDto);
 
             // Assert
             Assert.IsFalse(result);

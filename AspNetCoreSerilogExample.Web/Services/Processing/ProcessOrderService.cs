@@ -18,7 +18,7 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
             
         }
 
-        public IOrder GetOrder(string id)
+        public IOrderDTO GetOrder(string id)
         {
 
             if (id == null)
@@ -31,19 +31,19 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
 
         
 
-        public IOrder SubmitOrder(Order order)
+        public IOrderDTO SubmitOrder(OrderDTO orderdto)
         {
            
-            if (_validateOrderService.IsOrderValid(order) == false)
+            if (_validateOrderService.IsOrderValid(orderdto) == false)
             {
                 return null;
             }
             
 
-            return _orderData.SubmitOrder(order);
+            return _orderData.SubmitOrder(orderdto);
         }
 
-        public List<Order> GetOrders()
+        public List<OrderDTO> GetOrders()
         {
             return _orderData.GetOrders();
         }

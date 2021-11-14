@@ -27,11 +27,11 @@ namespace AspNetCoreSerilogExample.Web.Controllers
 
         [HttpPost]
         [Route("api/orders")]
-        public ActionResult<IOrder> Add([FromBody]Order order)
+        public ActionResult<IOrder> Add([FromBody]OrderDTO orderdto)
         {
-            _logger.LogInformation($"Input text: {order.Name}");
+            _logger.LogInformation($"Input text: {orderdto.Name}");
 
-            var returnedOrder = _processOrderService.SubmitOrder(order);
+            var returnedOrder = _processOrderService.SubmitOrder(orderdto);
             if (returnedOrder == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -41,11 +41,11 @@ namespace AspNetCoreSerilogExample.Web.Controllers
         
         [HttpPut]
         [Route("api/orders")]
-        public ActionResult<IOrder> Update([FromBody]Order order)
+        public ActionResult<IOrder> Update([FromBody]OrderDTO orderdto)
         {
-            _logger.LogInformation($"Input text: {order.Name}");
+            _logger.LogInformation($"Input text: {orderdto.Name}");
 
-            var updatedOrder = _processOrderService.SubmitOrder(order);
+            var updatedOrder = _processOrderService.SubmitOrder(orderdto);
             if (updatedOrder == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);

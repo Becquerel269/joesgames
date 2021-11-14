@@ -4,11 +4,11 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public interface IOrderData
     {
-        IOrder GetOrder(string id);
+        IOrderDTO GetOrder(string orderId);
 
-        IOrder SubmitOrder(Order order);
+        IOrderDTO SubmitOrder(OrderDTO orderdto);
 
-        List<Order> GetOrders();
+        List<OrderDTO> GetOrders();
 
         bool EnsureFileExists(string filepath);
     }
