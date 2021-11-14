@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public interface IOrderData
     {
-        IOrderDTO GetOrder(string orderId);
+        Task<IOrderDTO> GetOrder(string orderId);
 
-        IOrderDTO SubmitOrder(OrderDTO orderDto);
+        Task<IOrderDTO> SubmitOrder(OrderDTO orderDto);
 
-        List<OrderDTO> GetOrders();
+        Task<List<OrderDTO>> GetOrders();
     }
 }

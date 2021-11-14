@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AspNetCoreSerilogExample.Web.Controllers
 {
@@ -24,11 +25,11 @@ namespace AspNetCoreSerilogExample.Web.Controllers
 
         [HttpPost]
         [Route("api/orders")]
-        public ActionResult<IOrder> Add([FromBody] OrderDTO orderdto)
+        public async Task<ActionResult<IOrder>> Add([FromBody] OrderDTO orderdto)
         {
             _logger.LogInformation($"Input text: {orderdto.Name}");
 
-            var returnedOrder = _processOrderService.SubmitOrder(orderdto);
+            var returnedOrder = await _processOrderService.SubmitOrder(orderdto);
             if (returnedOrder == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -38,11 +39,11 @@ namespace AspNetCoreSerilogExample.Web.Controllers
 
         [HttpPut]
         [Route("api/orders")]
-        public ActionResult<IOrder> Update([FromBody] OrderDTO orderdto)
+        public async Task<ActionResult<IOrder>> Update([FromBody] OrderDTO orderdto)
         {
             _logger.LogInformation($"Input text: {orderdto.Name}");
 
-            var updatedOrder = _processOrderService.SubmitOrder(orderdto);
+            var updatedOrder = await _processOrderService.SubmitOrder(orderdto);
             if (updatedOrder == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -54,20 +55,20 @@ namespace AspNetCoreSerilogExample.Web.Controllers
         [HttpGet]
         [Route("api/orders/{id}")]
         [Produces("application/json")]
-        public ActionResult<IOrder> GetById(string id)
+        public async Task<ActionResult<IOrder>> GetById(string id)
         {
             _logger.LogInformation(
                 "Input text: {Input}",
                 id);
-            return Ok(_processOrderService.GetOrder(id));
+            return Ok(await _processOrderService.GetOrder(id));
         }
 
         [HttpGet]
         [Route("api/orders")]
         [Produces("application/json")]
-        public ActionResult<List<Order>> GetOrders()
+        public async Task<ActionResult<List<Order>>> GetOrders()
         {
-            return Ok(_processOrderService.GetOrders());
+            return Ok(await _processOrderService.GetOrders());
         }
     }
 }

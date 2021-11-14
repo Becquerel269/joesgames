@@ -3,25 +3,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class OrderData : IOrderData
     {
-        public IOrderDTO GetOrder(string orderId)
+        public async Task<IOrderDTO> GetOrder(string orderId)
         {
             if (GetFilepath(out var filepath)) return null;
-            var myJsonString = File.ReadAllText(filepath);
+            var myJsonString = await File.ReadAllTextAsync(filepath);
 
             List<OrderDTO> orders = JsonSerializer.Deserialize<List<OrderDTO>>(myJsonString);
 
             return orders?.FirstOrDefault(p => p.Id == orderId);
         }
 
-        public IOrderDTO SubmitOrder(OrderDTO orderDto)
+        public async Task<IOrderDTO> SubmitOrder(OrderDTO orderDto)
         {
             if (GetFilepath(out var filepath)) return null;
-            var myJsonString = File.ReadAllText(filepath);
+            var myJsonString = await File.ReadAllTextAsync(filepath);
             if (myJsonString == "")
             {
                 myJsonString = "[]";
@@ -50,49 +51,49 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             }
 
             string serializedOrders = JsonSerializer.Serialize(orders);
-            File.WriteAllText(filepath, serializedOrders);
+            await File.WriteAllTextAsync(filepath, serializedOrders);
 
             return orderDto;
         }
 
-        public List<OrderDTO> GetOrders()
+        public async Task<List<OrderDTO>> GetOrders()
         {
-            if (GetFilepath(out var filepath)) return null;
-            var myJsonString = File.ReadAllText(filepath);
+            if (GetFilepath(out var filepath)) return null; //change out param
+            var myJsonString = await File.ReadAllTextAsync(filepath);
 
             var orders = JsonSerializer.Deserialize<List<OrderDTO>>(myJsonString);
             return orders;
         }
 
-        private static string GetNewId(IOrderDTO orderdto, List<OrderDTO> orders)
+        private static string GetNewId(IOrderDTO orderDto, List<OrderDTO> orders) //IReadOnlyCollection
         {
             if (orders.Count == 0)
             {
-                orderdto.Id = "1";
+                orderDto.Id = "1";
             }
             else
             {
                 var currentMax = orders.Max(p => int.Parse(p.Id));
-                orderdto.Id = (currentMax + 1).ToString();
+                orderDto.Id = (currentMax + 1).ToString();
             }
 
-            return orderdto.Id;
+            return orderDto.Id;
         }
 
-        private bool GetFilepath(out string filepath)
+        private static bool GetFilepath(out string filepath)
         {
             var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             filepath = $"{baseDirectory}/data/test.json";
 
-            var fileokay = EnsureFileExists(filepath);
-            if (!fileokay)
+            var fileOkay = EnsureFileExists(filepath);
+            if (!fileOkay)
             {
                 return true;
             }
 
             return false;
         }
-        private bool EnsureFileExists(string filepath)
+        private static bool EnsureFileExists(string filepath)
         {
             if (File.Exists(filepath))
             {

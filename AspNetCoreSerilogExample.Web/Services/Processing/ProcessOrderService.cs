@@ -2,6 +2,7 @@
 using AspNetCoreSerilogExample.Web.Services.Validation;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AspNetCoreSerilogExample.Web.Services.Processing
 {
@@ -16,29 +17,29 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
             _orderData = orderData;
         }
 
-        public IOrderDTO GetOrder(string id)
+        public async Task<IOrderDTO> GetOrder(string id)
         {
             if (id == null)
             {
                 throw new ArgumentNullException("id must not be null");
             }
 
-            return _orderData.GetOrder(id);
+            return await _orderData.GetOrder(id);
         }
 
-        public IOrderDTO SubmitOrder(OrderDTO orderdto)
+        public async Task<IOrderDTO> SubmitOrder(OrderDTO orderdto)
         {
             if (_validateOrderService.IsOrderValid(orderdto) == false)
             {
                 return null;
             }
 
-            return _orderData.SubmitOrder(orderdto);
+            return await _orderData.SubmitOrder(orderdto);
         }
 
-        public List<OrderDTO> GetOrders()
+        public async Task<List<OrderDTO>> GetOrders()
         {
-            return _orderData.GetOrders();
+            return await _orderData.GetOrders();
         }
     }
 }

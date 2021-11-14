@@ -41,10 +41,10 @@ namespace JoesGamesTests.ProcessOrderTests
         public void ProcessOrder_ReturnsTrue_WithValidOrder()
         {
             // Arrange
-            _mockIOrderData.Setup(p => p.SubmitOrder(validOrderDto)).Returns(validOrderDto);
+            _mockIOrderData.Setup(p => p.SubmitOrder(validOrderDto)).ReturnsAsync(validOrderDto);
 
             // Act
-            var result = _processOrderService.SubmitOrder(validOrderDto);
+            var result = _processOrderService.SubmitOrder(validOrderDto).GetAwaiter().GetResult();
 
             // Assert
             Assert.AreEqual(validOrderDto.Id, result.Id);
@@ -57,7 +57,7 @@ namespace JoesGamesTests.ProcessOrderTests
             // Arrange
 
             // Act
-            var result = _processOrderService.SubmitOrder(invalidOrderDto);
+            var result = _processOrderService.SubmitOrder(invalidOrderDto).GetAwaiter().GetResult();
 
             // Assert
             Assert.IsNull(result);
@@ -67,7 +67,7 @@ namespace JoesGamesTests.ProcessOrderTests
         public void ProcessOrder_ReturnsNull_WithNull()
         {
             // Act
-            var result = _processOrderService.SubmitOrder(null);
+            var result = _processOrderService.SubmitOrder(null).GetAwaiter().GetResult();
 
             // Assert
             Assert.IsNull(result);
@@ -85,9 +85,9 @@ namespace JoesGamesTests.ProcessOrderTests
                 items: new List<OrderItem>()
 
             );
-            _mockIOrderData.Setup(p => p.GetOrder(expectOrderdto.Id)).Returns(expectOrderdto);
+            _mockIOrderData.Setup(p => p.GetOrder(expectOrderdto.Id)).ReturnsAsync(expectOrderdto);
             // Act
-            var result = _processOrderService.GetOrder(expectOrderdto.Id);
+            var result = _processOrderService.GetOrder(expectOrderdto.Id).GetAwaiter().GetResult();
 
             // Assert
             Assert.AreEqual(expectOrderdto.Id, result.Id);
@@ -113,17 +113,17 @@ namespace JoesGamesTests.ProcessOrderTests
         public void GetOrder_Throws_WithNullId()
         {
             // Act
-            var result = _processOrderService.GetOrder(null);
+            var result = _processOrderService.GetOrder(null).GetAwaiter().GetResult();
         }
 
         [TestMethod]
         public void GetOrders_ReturnsEmptyList_WithNoOrders()
         {
             //Arrange
-            _mockIOrderData.Setup(p => p.GetOrders()).Returns(new List<OrderDTO>());
+            _mockIOrderData.Setup(p => p.GetOrders()).ReturnsAsync(new List<OrderDTO>());
 
             // Act
-            var result = _processOrderService.GetOrders();
+            var result = _processOrderService.GetOrders().GetAwaiter().GetResult();
 
             // Assert
             Assert.IsTrue(result.Count == 0);
@@ -149,10 +149,10 @@ namespace JoesGamesTests.ProcessOrderTests
             expectedOrders.Add(orderOne);
             expectedOrders.Add(orderTwo);
 
-            _mockIOrderData.Setup(p => p.GetOrders()).Returns(expectedOrders);
+            _mockIOrderData.Setup(p => p.GetOrders()).ReturnsAsync(expectedOrders);
 
             // Act
-            var result = _processOrderService.GetOrders();
+            var result = _processOrderService.GetOrders().GetAwaiter().GetResult();
 
             // Assert
             Assert.IsTrue(result.Count == 2);
