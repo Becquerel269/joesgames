@@ -70,5 +70,13 @@ namespace AspNetCoreSerilogExample.Web.Controllers
         {
             return Ok(await _processOrderService.GetOrders());
         }
+
+        [HttpDelete]
+        [Route("api/orders/{id}")]
+        [Produces("application/json")]
+        public async Task<ActionResult<List<Order>>> Delete(string id)
+        {
+            return Ok(await _processOrderService.DeleteOrder(id));
+        }
     }
 }

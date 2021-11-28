@@ -4,6 +4,10 @@
     <TargetFramework>net5.0</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Models\OrderData.cs" />
+  </ItemGroup>
   
   <ItemGroup>
     <!-- Serilog dependencies -->

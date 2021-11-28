@@ -85,6 +85,17 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             return (await con.QueryAsync<OrderItem>(orderItemQuery, parameters)).FirstOrDefault();
         }
 
+        public async Task<IOrderDTO> DeleteOrder(string orderItemId)
+        {
+            using var con = new SqlConnection(connectionString);
+            con.Open();
+            var parameters = new { OrderItemId = orderItemId };
+            const string query = "DELETE FROM [dbo].[OrderItems] WHERE ID = @OrderItemId";
+            return (await con.QueryAsync<IOrderDTO>(query, parameters)).FirstOrDefault();
+
+        }
+
+        
         //delete method for order and orderitems
         //in business layer for update, add a check for if order exists before calling submit in data layer
         //auto-mapping

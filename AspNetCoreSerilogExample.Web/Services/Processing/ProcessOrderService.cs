@@ -10,6 +10,7 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
     {
         private readonly IValidateOrderService _validateOrderService;
         private readonly IOrderData _orderData;
+  
 
         public ProcessOrderService(IValidateOrderService validateOrderService, IOrderData orderData)
         {
@@ -40,6 +41,11 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
         public async Task<List<OrderDTO>> GetOrders()
         {
             return await _orderData.GetOrders();
+        }
+
+        public async Task<IOrderDTO> DeleteOrder(string id)
+        {
+            return await _orderData.DeleteOrder(id);
         }
     }
 }
