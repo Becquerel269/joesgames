@@ -27,9 +27,9 @@ namespace AspNetCoreSerilogExample.Web
         {
             services.AddControllers();
             services.AddLogging();
-            services.TryAdd(ServiceDescriptor.Singleton<IValidateOrderService, ValidateOrderService>());
-            services.TryAdd(ServiceDescriptor.Singleton<IProcessOrderService, ProcessOrderService>());
-            services.TryAdd(ServiceDescriptor.Singleton<IOrderData, OrderDataDB>());
+            services.TryAdd(ServiceDescriptor.Transient<IValidateOrderService, ValidateOrderService>());
+            services.TryAdd(ServiceDescriptor.Transient<IProcessOrderService, ProcessOrderService>());
+            services.TryAdd(ServiceDescriptor.Transient<IOrderData, OrderDataDB>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
