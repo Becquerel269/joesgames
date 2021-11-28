@@ -1,4 +1,5 @@
 ﻿using AspNetCoreSerilogExample.Web.Data.Models;
+using AspNetCoreSerilogExample.Web.Extensions;
 using AspNetCoreSerilogExample.Web.Services.Processing;
 using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.AspNetCore.Http;
@@ -44,16 +45,9 @@ namespace AspNetCoreSerilogExample.Web.Controllers
             _logger.LogInformation($"Input text: {orderdto.Name}");
 
             var status = await _processOrderService.UpdateOrder(orderdto);
-            switch (status)
-            {
-                case 200:
-                    return Ok();
-                case 400:
-                    return StatusCode(StatusCodes.Status400BadRequest);
-                default:
-                    return StatusCode(StatusCodes.Status500InternalServerError);
 
-            }
+            return StatusCode(status.ToHTTPStatusCode());
+            
         }
 
         //https://localhost:5001/api/test/order
