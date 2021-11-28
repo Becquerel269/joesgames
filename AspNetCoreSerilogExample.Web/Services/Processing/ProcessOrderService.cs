@@ -47,16 +47,25 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
             {
                 return 400;
             }
+            int numberOfRowsUpdated = 0;
             try
             {
-                await _orderData.UpdateOrder(orderdto);
+                
+                numberOfRowsUpdated = await _orderData.UpdateOrder(orderdto);
+
+                if (numberOfRowsUpdated != 1)
+                {
+                    _logger.Error("unexpected number of rows affected expected 1 row, actual: {@num}", numberOfRowsUpdated);
+                    return 500;
+                }
             }
             catch (Exception e)
             {
 
-                _logger.Error("unable to update order {Orderdto}",orderdto);
+                _logger.Error("unable to update order {@Orderdto}. exception {@excepetion}",orderdto, e);
                 return 500;
             }
+            
             return 200;
         }
 

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,11 +15,13 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
         //private const string connectionString = "Data Source=RYZEN-MEGA-BOX;Initial Catalog=JoesGames;Integrated Security=true";
         private readonly IConfiguration _configuration;
         private string _connectionString;
+        private readonly ILogger _logger;
 
-        public OrderDataDB(IConfiguration configuration)
+        public OrderDataDB(IConfiguration configuration, ILogger logger)
         {
             _configuration = configuration;
             _connectionString = _configuration.GetConnectionString("JoesGamesDB");
+            _logger = logger;
         }
 
         public async Task<IOrderDTO> GetOrder(string orderId)
@@ -74,13 +77,14 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             return addedOrderDto;
         }
 
-        public async Task UpdateOrder(OrderDTO orderDto)
+        public async Task<int> UpdateOrder(OrderDTO orderDto)
         {
             using var con = new SqlConnection(_connectionString);
             con.Open();
             var parameters = new { Name = orderDto.Name, ID = orderDto.Id};
             const string query = "UPDATE [dbo].[Orders] SET Name = @Name WHERE ID = @ID";
-            (await con.QueryAsync<IOrderDTO>(query, parameters)).FirstOrDefault();
+            return await con.ExecuteAsync(query, parameters);
+            
         }
 
         public async Task<List<OrderDTO>> GetOrders()

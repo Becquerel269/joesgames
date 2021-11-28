@@ -3,6 +3,7 @@ using AspNetCoreSerilogExample.Web.Services.Processing;
 using AspNetCoreSerilogExample.Web.Services.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +18,14 @@ namespace JoesGamesTests.ProcessOrderTests
         private IProcessOrderService _processOrderService;
         private IValidateOrderService _validateOrderService;
         private readonly Mock<IOrderData> _mockIOrderData = new Mock<IOrderData>();
+        private readonly Mock<ILogger> _mockILogger = new Mock<ILogger>();
 
         [TestInitialize]
         public void TestInitialize()
         {
             _validateOrderService = new ValidateOrderService();
 
-            _processOrderService = new ProcessOrderService(_validateOrderService, _mockIOrderData.Object);
+            _processOrderService = new ProcessOrderService(_validateOrderService, _mockIOrderData.Object, _mockILogger.Object);
             string[] items = { "item1", "item2" };
             validOrderDto = new OrderDTO()
             {
