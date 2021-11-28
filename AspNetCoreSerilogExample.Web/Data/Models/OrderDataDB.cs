@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,11 +11,19 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 {
     public class OrderDataDB : IOrderData
     {
-        private const string connectionString = "Data Source=RYZEN-MEGA-BOX;Initial Catalog=JoesGames;Integrated Security=true";
+        //private const string connectionString = "Data Source=RYZEN-MEGA-BOX;Initial Catalog=JoesGames;Integrated Security=true";
+        private readonly IConfiguration _configuration;
+        private string _connectionString;
+
+        public OrderDataDB(IConfiguration configuration)
+        {
+            _configuration = configuration;
+            _connectionString = _configuration.GetConnectionString("JoesGamesDB");
+        }
 
         public async Task<IOrderDTO> GetOrder(string orderId)
         {
-            using IDbConnection con = new SqlConnection(connectionString);
+            using IDbConnection con = new SqlConnection(_connectionString);
             con.Open();
             var parameters = new { OrderId = orderId };
             const string orderQuery = @"SELECT * FROM [dbo].[orders] WHERE ID = @OrderId";
@@ -35,7 +44,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
         public async Task<IOrderDTO> SubmitOrder(OrderDTO orderDto)
         {
             orderDto.Id ??= Guid.NewGuid().ToString();
-            using IDbConnection con = new SqlConnection(connectionString);
+            using IDbConnection con = new SqlConnection(_connectionString);
 
             con.Open();
             var orderQueryParameters = new { Id = orderDto.Id, Name = orderDto.Name };
@@ -65,9 +74,18 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             return addedOrderDto;
         }
 
+        public async Task UpdateOrder(OrderDTO orderDto)
+        {
+            using var con = new SqlConnection(_connectionString);
+            con.Open();
+            var parameters = new { Name = orderDto.Name, ID = orderDto.Id};
+            const string query = "UPDATE [dbo].[Orders] SET Name = @Name WHERE ID = @ID";
+            (await con.QueryAsync<IOrderDTO>(query, parameters)).FirstOrDefault();
+        }
+
         public async Task<List<OrderDTO>> GetOrders()
         {
-            using var con = new SqlConnection(connectionString);
+            using var con = new SqlConnection(_connectionString);
             con.Open();
             const string query = @"SELECT * FROM dbo.orders ";
             var orders = (await con.QueryAsync<OrderDTO>(query)).ToList();
@@ -78,7 +96,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 
         private async Task<OrderItem> GetOrderItem(string orderItemId)
         {
-            using IDbConnection con = new SqlConnection(connectionString);
+            using IDbConnection con = new SqlConnection(_connectionString);
             con.Open();
             var parameters = new { OrderItemId = orderItemId };
             const string orderItemQuery = "SELECT * FROM [dbo].[OrderItems] WHERE ID = @OrderItemId";
@@ -87,7 +105,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 
         public async Task<IOrderDTO> DeleteOrder(string orderItemId)
         {
-            using var con = new SqlConnection(connectionString);
+            using var con = new SqlConnection(_connectionString);
             con.Open();
             var parameters = new { OrderItemId = orderItemId };
             const string query = "DELETE FROM [dbo].[OrderItems] WHERE ID = @OrderItemId";
@@ -95,7 +113,9 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 
         }
 
-        
+      
+
+
         //delete method for order and orderitems
         //in business layer for update, add a check for if order exists before calling submit in data layer
         //auto-mapping

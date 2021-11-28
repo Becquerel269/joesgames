@@ -43,12 +43,17 @@ namespace AspNetCoreSerilogExample.Web.Controllers
         {
             _logger.LogInformation($"Input text: {orderdto.Name}");
 
-            var updatedOrder = await _processOrderService.SubmitOrder(orderdto);
-            if (updatedOrder == null)
+            var status = await _processOrderService.UpdateOrder(orderdto);
+            switch (status)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                case 200:
+                    return Ok();
+                case 400:
+                    return StatusCode(StatusCodes.Status400BadRequest);
+                default:
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+
             }
-            return Ok(updatedOrder);
         }
 
         //https://localhost:5001/api/test/order
