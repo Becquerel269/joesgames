@@ -114,8 +114,8 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             return await con.ExecuteAsync(query, parameters);
         }
 
-        //clean up code improve test coverage full set of tests then push up (http://www.ncover.com/solutions/development https://www.testdriven.net/ for test coverage %) 
-        //delete order needs to be executeAsync if writing to SQL use execute, if querying then its query
+        
+        //read/watch into octopus deploy
         //in business layer for update, add a check for if order exists before calling submit in data layer
         //auto-mapping
         //research extension methods & create extension method for string to check if string has only white space or is null called 'isnullorblank' .isnullorblank()
