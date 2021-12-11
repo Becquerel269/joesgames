@@ -11,7 +11,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
 
         Task<List<OrderDTO>> GetOrders();
 
-        Task<IOrderDTO> DeleteOrder(string id);
+        Task<int> DeleteOrder(string id);
 
         Task<int> UpdateOrder(OrderDTO orderDto);
     }

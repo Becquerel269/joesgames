@@ -1,8 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AspNetCoreSerilogExample.Web.Extensions
 {
@@ -14,11 +10,12 @@ namespace AspNetCoreSerilogExample.Web.Extensions
             {
                 case 200:
                     return StatusCodes.Status200OK;
+
                 case 400:
                     return StatusCodes.Status400BadRequest;
+
                 default:
                     return StatusCodes.Status500InternalServerError;
-
             }
         }
     }

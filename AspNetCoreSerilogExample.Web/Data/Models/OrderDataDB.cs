@@ -14,6 +14,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
     {
         //private const string connectionString = "Data Source=RYZEN-MEGA-BOX;Initial Catalog=JoesGames;Integrated Security=true";
         private readonly IConfiguration _configuration;
+
         private string _connectionString;
         private readonly ILogger _logger;
 
@@ -81,10 +82,9 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
         {
             using var con = new SqlConnection(_connectionString);
             con.Open();
-            var parameters = new { Name = orderDto.Name, ID = orderDto.Id};
+            var parameters = new { Name = orderDto.Name, ID = orderDto.Id };
             const string query = "UPDATE [dbo].[Orders] SET Name = @Name WHERE ID = @ID";
             return await con.ExecuteAsync(query, parameters);
-            
         }
 
         public async Task<List<OrderDTO>> GetOrders()
@@ -94,9 +94,7 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             const string query = @"SELECT * FROM dbo.orders ";
             var orders = (await con.QueryAsync<OrderDTO>(query)).ToList();
             return orders;
-            
         }
-
 
         private async Task<OrderItem> GetOrderItem(string orderItemId)
         {
@@ -107,20 +105,17 @@ namespace AspNetCoreSerilogExample.Web.Data.Models
             return (await con.QueryAsync<OrderItem>(orderItemQuery, parameters)).FirstOrDefault();
         }
 
-        public async Task<IOrderDTO> DeleteOrder(string orderItemId)
+        public async Task<int> DeleteOrder(string orderItemId)
         {
             using var con = new SqlConnection(_connectionString);
             con.Open();
             var parameters = new { OrderItemId = orderItemId };
             const string query = "DELETE FROM [dbo].[OrderItems] WHERE ID = @OrderItemId";
-            return (await con.QueryAsync<IOrderDTO>(query, parameters)).FirstOrDefault();
-
+            return await con.ExecuteAsync(query, parameters);
         }
 
-      
-
-
-        //delete method for order and orderitems
+        //clean up code improve test coverage full set of tests then push up (http://www.ncover.com/solutions/development https://www.testdriven.net/ for test coverage %) 
+        //delete order needs to be executeAsync if writing to SQL use execute, if querying then its query
         //in business layer for update, add a check for if order exists before calling submit in data layer
         //auto-mapping
         //research extension methods & create extension method for string to check if string has only white space or is null called 'isnullorblank' .isnullorblank()

@@ -12,7 +12,6 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
         private readonly IValidateOrderService _validateOrderService;
         private readonly IOrderData _orderData;
         private readonly ILogger _logger;
-  
 
         public ProcessOrderService(IValidateOrderService validateOrderService, IOrderData orderData, ILogger logger)
         {
@@ -27,7 +26,7 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
             {
                 throw new ArgumentNullException("id must not be null");
             }
-
+            //check for if ID doesn't exist - think this is covered in the .FirstOrDefault() in the data layer?
             return await _orderData.GetOrder(id);
         }
 
@@ -50,10 +49,9 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
             int numberOfRowsUpdated = 0;
             try
             {
-                
                 numberOfRowsUpdated = await _orderData.UpdateOrder(orderdto);
 
-                if (numberOfRowsUpdated != 1)
+                if (numberOfRowsUpdated > 1)
                 {
                     _logger.Error("unexpected number of rows affected expected 1 row, actual: {@num}", numberOfRowsUpdated);
                     return 500;
@@ -61,21 +59,19 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
             }
             catch (Exception e)
             {
-
-                _logger.Error("unable to update order {@Orderdto}. exception {@excepetion}",orderdto, e);
+                _logger.Error("unable to update order {@Orderdto}. exception {@excepetion}", orderdto, e);
                 return 500;
             }
-            
+
             return 200;
         }
-
 
         public async Task<List<OrderDTO>> GetOrders()
         {
             return await _orderData.GetOrders();
         }
 
-        public async Task<IOrderDTO> DeleteOrder(string id)
+        public async Task<int> DeleteOrder(string id)
         {
             return await _orderData.DeleteOrder(id);
         }

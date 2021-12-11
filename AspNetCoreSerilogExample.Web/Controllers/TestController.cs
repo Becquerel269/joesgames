@@ -47,7 +47,6 @@ namespace AspNetCoreSerilogExample.Web.Controllers
             var status = await _processOrderService.UpdateOrder(orderdto);
 
             return StatusCode(status.ToHTTPStatusCode());
-            
         }
 
         //https://localhost:5001/api/test/order

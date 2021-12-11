@@ -54,7 +54,6 @@ namespace AspNetCoreSerilogExample.Web
 
             // Absolute minimum setup, just return "Hello world!" to browser.
             // You can use Controllers, SPA routing, SignalR, etc. routing.
-            
 
             app.UseEndpoints(endpoints =>
             {

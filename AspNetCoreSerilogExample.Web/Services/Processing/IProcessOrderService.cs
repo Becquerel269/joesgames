@@ -14,6 +14,6 @@ namespace AspNetCoreSerilogExample.Web.Services.Processing
 
         Task<int> UpdateOrder(OrderDTO orderdto);
 
-        Task<IOrderDTO> DeleteOrder(string id);
+        Task<int> DeleteOrder(string id);
     }
 }
